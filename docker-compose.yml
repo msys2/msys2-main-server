@@ -4,7 +4,7 @@ services:
   reverse-proxy:
     image: traefik:v2.3
     command:
-      - "--api.insecure=true" # for debug interface on 8080
+      # - "--api.insecure=true" # for debug interface on 8080
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.rsync.address=:873"
