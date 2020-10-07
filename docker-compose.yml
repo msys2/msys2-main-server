@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik:v2.3
+    command:
+      - "--api.insecure=true" # for debug interface on 8080
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.rsync.address=:873"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesResolvers.le.acme.email=david.macek.0@gmail.com"
+      - "--certificatesResolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesResolvers.le.acme.httpChallenge=true"
+      - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "873:873"
+      # - "8080:8080" # for debug interface on 8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - letsencrypt:/letsencrypt
+
+  repo:
+    image: nginx
+    volumes:
+      - ../msys2:/usr/share/nginx/html:ro
+      - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
+      - "traefik.http.routers.repo.tls=true"
+      - "traefik.http.routers.repo.tls.certresolver=le"
+
+  rsync:
+    build: ./rsync
+    volumes:
+      - ../msys2:/rsync-volume:ro
+      - ./rsync/rsyncd.conf:/etc/rsyncd.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.rsync.entrypoints=rsync"
+
+volumes:
+  letsencrypt:
