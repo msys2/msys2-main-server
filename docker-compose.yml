@@ -22,6 +22,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - letsencrypt:/letsencrypt
+    restart: always
 
   repo:
     image: nginx
@@ -33,6 +34,7 @@ services:
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo.tls=true"
       - "traefik.http.routers.repo.tls.certresolver=le"
+    restart: always
 
   rsync:
     build: ./rsync
@@ -43,6 +45,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
+    restart: always
 
 volumes:
   letsencrypt:
