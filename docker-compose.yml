@@ -32,8 +32,11 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
-      - "traefik.http.routers.repo.tls=true"
-      - "traefik.http.routers.repo.tls.certresolver=le"
+      - "traefik.http.routers.repo.entrypoints=web"
+      - "traefik.http.routers.reposecure.rule=Host(`repo.msys2.org`)"
+      - "traefik.http.routers.reposecure.tls=true"
+      - "traefik.http.routers.reposecure.tls.certresolver=le"
+      - "traefik.http.routers.reposecure.entrypoints=websecure"
     restart: always
 
   rsync:
