@@ -8,6 +8,6 @@ Provides:
 
 ## Setup
 
-* Clone this to the same level as the root repo dir (called `msys2`)
-* `../msys2/mingw/x86_64` should exist
-* Run `docker-compose up -d`
+* Clone.
+* The storage is pointed to `/srv/msys2repo` so `/srv/msys2repo/mingw/x86_64/` should exist.
+* Run `docker-compose up -d`.

@@ -27,7 +27,7 @@ services:
   repo:
     image: nginx
     volumes:
-      - ../msys2:/usr/share/nginx/html:ro
+      - /srv/msys2repo:/usr/share/nginx/html:ro
       - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
@@ -39,7 +39,7 @@ services:
   rsync:
     build: ./rsync
     volumes:
-      - ../msys2:/rsync-volume:ro
+      - /srv/msys2repo:/rsync-volume:ro
       - ./rsync/rsyncd.conf:/etc/rsyncd.conf:ro
     labels:
       - "traefik.enable=true"
