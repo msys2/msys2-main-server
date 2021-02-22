@@ -24,6 +24,22 @@ services:
       - letsencrypt:/letsencrypt
     restart: always
 
+  packages:
+    build: https://github.com/msys2/msys2-web.git
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      # http
+      - "traefik.http.routers.pkgs.rule=Host(`packages.msys2.org`)"
+      - "traefik.http.routers.pkgs.entrypoints=web"
+      - "traefik.http.routers.pkgs.middlewares=pkgs-redir"
+      - "traefik.http.middlewares.pkgs-redir.redirectscheme.scheme=https"
+      # https
+      - "traefik.http.routers.pkgssecure.rule=Host(`packages.msys2.org`)"
+      - "traefik.http.routers.pkgssecure.entrypoints=websecure"
+      - "traefik.http.routers.pkgssecure.tls=true"
+      - "traefik.http.routers.pkgssecure.tls.certresolver=le"
+
   redir:
     image: nginx
     labels:
