@@ -56,11 +56,11 @@ Content-Length: 433
 
 ```
 $ curl -ki --connect-to repo.msys2.org:443:$SERVER:443 https://repo.msys2.org/
-HTTP/1.1 200 OK
-Content-Type: text/html
-Date: Sun, 21 Feb 2021 17:36:14 GMT
-Server: nginx/1.19.7
-Content-Length: 433
+HTTP/2 200
+content-type: text/html
+date: Mon, 22 Feb 2021 09:12:44 GMT
+server: nginx/1.19.7
+content-length: 135
 
 <html>
 <head><title>Index of /</title></head>
@@ -75,12 +75,53 @@ Content-Length: 433
 
 ```
 $ curl -i --connect-to packages.msys2.org:80:$SERVER:80 http://packages.msys2.org/
-???
+HTTP/1.1 302 Found
+Location: https://packages.msys2.org/
+Date: Mon, 22 Feb 2021 09:13:17 GMT
+Content-Length: 5
+Content-Type: text/plain; charset=utf-8
+
+Found
 ```
 
 ```
-$ curl -ki --connect-to packages.msys2.org:443:$SERVER:443 https://packages.msys2.org/
-???
+$ curl -ki --connect-to packages.msys2.org:443:$SERVER:443 https://packages.msys2.org/api/
+HTTP/2 200
+content-type: text/html; charset=utf-8
+date: Mon, 22 Feb 2021 09:14:40 GMT
+server: uvicorn
+content-length: 983
+
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css">
+    <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png">
+    <title>MSYS2 Packages API - Swagger UI</title>
+    </head>
+    <body>
+    <div id="swagger-ui">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js"></script>
+    <!-- `SwaggerUIBundle` is now available on the page -->
+    <script>
+    const ui = SwaggerUIBundle({
+        url: '/api/openapi.json',
+    oauth2RedirectUrl: window.location.origin + '/api/docs/oauth2-redirect',
+        dom_id: '#swagger-ui',
+        presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        deepLinking: true,
+        showExtensions: true,
+        showCommonExtensions: true
+    })
+    </script>
+    </body>
+    </html>
 ```
 
 ```
@@ -96,11 +137,11 @@ Found
 
 ```
 $ curl -ki --connect-to msys2.org:443:$SERVER:443 https://msys2.org
-HTTP/1.1 302 Found
-Location: https://www.msys2.org/
-Date: Mon, 22 Feb 2021 08:40:12 GMT
-Content-Length: 5
-Content-Type: text/plain; charset=utf-8
+HTTP/2 302
+location: https://www.msys2.org/
+content-type: text/plain; charset=utf-8
+content-length: 5
+date: Mon, 22 Feb 2021 09:15:28 GMT
 
 Found
 ```
@@ -118,11 +159,11 @@ Found
 
 ```
 $ curl -ki --connect-to msys2.com:443:$SERVER:443 https://msys2.com
-HTTP/1.1 302 Found
-Location: https://www.msys2.org/
-Date: Mon, 22 Feb 2021 08:40:12 GMT
-Content-Length: 5
-Content-Type: text/plain; charset=utf-8
+HTTP/2 302
+location: https://www.msys2.org/
+content-type: text/plain; charset=utf-8
+content-length: 5
+date: Mon, 22 Feb 2021 09:16:27 GMT
 
 Found
 ```
@@ -140,11 +181,11 @@ Found
 
 ```
 $ curl -ki --connect-to www.msys2.com:443:$SERVER:443 https://www.msys2.com
-HTTP/1.1 302 Found
-Location: https://www.msys2.org/
-Date: Mon, 22 Feb 2021 08:40:12 GMT
-Content-Length: 5
-Content-Type: text/plain; charset=utf-8
+HTTP/2 302
+location: https://www.msys2.org/
+content-type: text/plain; charset=utf-8
+content-length: 5
+date: Mon, 22 Feb 2021 09:17:43 GMT
 
 Found
 ```
@@ -162,11 +203,11 @@ Found
 
 ```
 $ curl -ki --connect-to msys2.net:443:$SERVER:443 https://msys2.net
-HTTP/1.1 302 Found
-Location: https://www.msys2.org/
-Date: Mon, 22 Feb 2021 08:40:12 GMT
-Content-Length: 5
-Content-Type: text/plain; charset=utf-8
+HTTP/2 302
+location: https://www.msys2.org/
+content-type: text/plain; charset=utf-8
+content-length: 5
+date: Mon, 22 Feb 2021 09:18:13 GMT
 
 Found
 ```
@@ -184,11 +225,11 @@ Found
 
 ```
 $ curl -ki --connect-to www.msys2.net:443:$SERVER:443 https://www.msys2.net
-HTTP/1.1 302 Found
-Location: https://www.msys2.org/
-Date: Mon, 22 Feb 2021 08:40:12 GMT
-Content-Length: 5
-Content-Type: text/plain; charset=utf-8
+HTTP/2 302
+location: https://www.msys2.org/
+content-type: text/plain; charset=utf-8
+content-length: 5
+date: Mon, 22 Feb 2021 09:18:39 GMT
 
 Found
 ```

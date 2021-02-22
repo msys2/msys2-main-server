@@ -26,7 +26,6 @@ services:
 
   packages:
     build: https://github.com/msys2/msys2-web.git
-    restart: always
     labels:
       - "traefik.enable=true"
       # http
@@ -39,24 +38,25 @@ services:
       - "traefik.http.routers.pkgssecure.entrypoints=websecure"
       - "traefik.http.routers.pkgssecure.tls=true"
       - "traefik.http.routers.pkgssecure.tls.certresolver=le"
+    restart: always
 
   redir:
     image: nginx
     labels:
       - "traefik.enable=true"
       # http
-      - "traefik.http.routers.main.rule=Host(`msys2.org`)"
+      - "traefik.http.routers.main.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
       - "traefik.http.routers.main.entrypoints=web"
       - "traefik.http.routers.main.middlewares=msys2-redir"
-      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http://msys2.org/(.*)"
+      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
       - "traefik.http.middlewares.msys2-redir.redirectregex.replacement=http://www.msys2.org/$${1}"
       # https
-      - "traefik.http.routers.mainsecure.rule=Host(`msys2.org`)"
+      - "traefik.http.routers.mainsecure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
       - "traefik.http.routers.mainsecure.entrypoints=websecure"
       - "traefik.http.routers.mainsecure.tls=true"
       - "traefik.http.routers.mainsecure.tls.certresolver=le"
       - "traefik.http.routers.mainsecure.middlewares=msys2-redir-secure"
-      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.regex=^https://msys2.org/(.*)"
+      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.regex=^https://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
       - "traefik.http.middlewares.msys2-redir-secure.redirectregex.replacement=https://www.msys2.org/$${1}"
     restart: always
 
