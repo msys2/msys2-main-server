@@ -24,6 +24,26 @@ services:
       - letsencrypt:/letsencrypt
     restart: always
 
+  redir:
+    image: nginx
+    labels:
+      - "traefik.enable=true"
+      # http
+      - "traefik.http.routers.main.rule=Host(`msys2.org`)"
+      - "traefik.http.routers.main.entrypoints=web"
+      - "traefik.http.routers.main.middlewares=msys2-redir"
+      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http://msys2.org/(.*)"
+      - "traefik.http.middlewares.msys2-redir.redirectregex.replacement=http://www.msys2.org/$${1}"
+      # https
+      - "traefik.http.routers.mainsecure.rule=Host(`msys2.org`)"
+      - "traefik.http.routers.mainsecure.entrypoints=websecure"
+      - "traefik.http.routers.mainsecure.tls=true"
+      - "traefik.http.routers.mainsecure.tls.certresolver=le"
+      - "traefik.http.routers.mainsecure.middlewares=msys2-redir-secure"
+      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.regex=^https://msys2.org/(.*)"
+      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.replacement=https://www.msys2.org/$${1}"
+    restart: always
+
   repo:
     image: nginx
     volumes:
