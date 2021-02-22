@@ -67,8 +67,10 @@ services:
       - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
+      # http
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo.entrypoints=web"
+      # https
       - "traefik.http.routers.reposecure.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.reposecure.tls=true"
       - "traefik.http.routers.reposecure.tls.certresolver=le"
