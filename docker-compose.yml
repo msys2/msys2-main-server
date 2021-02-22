@@ -7,6 +7,7 @@ services:
       # - "--api.insecure=true" # for debug interface on 8080
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/configs/"
       - "--entrypoints.rsync.address=:873"
       - "--entryPoints.web.address=:80"
       - "--entryPoints.websecure.address=:443"
@@ -21,6 +22,7 @@ services:
       # - "8080:8080" # for debug interface on 8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
       - letsencrypt:/letsencrypt
     restart: always
 
