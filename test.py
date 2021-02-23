@@ -44,9 +44,11 @@ class Test(unittest.TestCase):
             self.assertTrue("<html" in out)
         with urlopen("https://packages.msys2.org", timeout=self.TIMEOUT) as r:
             self.assertTrue(r.url.startswith("https://packages.msys2.org"))
+            out = r.read().decode()
             self.assertTrue("<html" in out)
         with urlopen("https://packages.msys2.org/api", timeout=self.TIMEOUT) as r:
             self.assertTrue(r.url.startswith("https://packages.msys2.org/api"))
+            out = r.read().decode()
             self.assertTrue("<html" in out)
 
 
