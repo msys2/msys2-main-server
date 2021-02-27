@@ -36,6 +36,7 @@ update() {
     repo-remove -q -s -v "${staging}/msys/i686/msys.db.tar.gz" __empty__
     touch "${pub}/~updating"
     rsync -rtl --delete-after --delay-updates --safe-links "${staging}/" "${pub}/"
+    rm -r "${staging}"
 }
 
 echo "Initializing"
