@@ -40,6 +40,8 @@ services:
       - "traefik.http.routers.pkgssecure.entrypoints=websecure"
       - "traefik.http.routers.pkgssecure.tls=true"
       - "traefik.http.routers.pkgssecure.tls.certresolver=le"
+    environment:
+      - FORWARDED_ALLOW_IPS=*
     restart: always
 
   redir:
