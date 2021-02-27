@@ -4,6 +4,7 @@ Provides:
 
 * nginx service for serving installers and packages (ports 80 and 443)
 * rsync server for serving the same (port 873)
+* daemon and http server for staging repositories
 * letsencrypt integration
 * packages web interface and API
 * redirects from non-canonical domains
@@ -38,4 +39,24 @@ Ran 4 tests in 5.909s
 OK
 ```
 
-which checks if all services are up and responding properly.
+... which checks if all services are up and responding properly.
+
+
+## Staging repositories
+
+Add to `/etc/pacman.conf` above the official repositories like this:
+
+```ini
+[staging]
+Server = https://repo.msys2.org/staging/
+SigLevel = Never
+
+[mingw32]
+Include = /etc/pacman.d/mirrorlist.mingw32
+
+[mingw64]
+Include = /etc/pacman.d/mirrorlist.mingw64
+
+[msys]
+Include = /etc/pacman.d/mirrorlist.msys
+```
