@@ -1,5 +1,7 @@
 # How the server was set up
 
+As *root*:
+
 ```bash
 apt update
 apt upgrade
@@ -11,8 +13,7 @@ cat >> ~/.profile
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
-. /usr/lib/git-core/git-sh-prompt
-export PS1='\[\e]0;\u@\h: \w\a\]\n${debian_chroot:+($debian_chroot)}\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]$(__git_ps1 " (%s)")\n\[\e[1m\]#\[\e[0m\] '
+export PS1='\[\e]0;\u@\h: \w\a\]\n${debian_chroot:+($debian_chroot)}\[\033[32m\]\u@\h \[\e[33m\]\w\[\e[0m\]\n\[\e[1m\]#\[\e[0m\] '
 ^D
 
 apt install mc
@@ -65,8 +66,11 @@ usermod -p '*' repo
 mkdir /home/repo
 chown -R repo:repo /home/repo
 chmod go-rwx -R /home/repo
+```
 
-# as repo
+As `repo`:
+
+```bash
 cat >> ~/.profile
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -78,19 +82,18 @@ select-editor
 echo "export EDITOR=mcedit" >> ~/.profile
 echo "export LANG=en_US.UTF-8" >> ~/.profile
 
+sudo apt install rsync
 sudo mkdir /srv/msys2repo
 sudo chown repo:repo /srv/msys2repo
 rsync -rtlvH --delete-after --delay-updates --safe-links rsync://repo.msys2.org/builds/ /srv/msys2repo/
 
-sudo apt install docker.io docker-compose rsync
-iptables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
-ip6tables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
-dpkg-reconfigure -plow iptables-persistent
+sudo apt install docker.io docker-compose
+sudo iptables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
+sudo ip6tables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
+sudo dpkg-reconfigure -plow iptables-persistent
 git clone https://github.com/msys2/msys2-main-server
 echo "GITHUB_TOKEN=<token from https://github.com/settings/tokens with nothing enabled>" > msys2-main-server/github_token.env
-cd msys2-main-server
-sudo docker-compose up -d
-cd ..
+sudo docker-compose up -d --project-directory msys2-main-server
 
 sudo apt install gnupg
 gpg --update-trustdb
@@ -133,17 +136,12 @@ sudo service ssh reload
 sudo apt install python3-pip
 echo "export $(cat msys2-main-server/github_token.env)" >> ~/.profile
 git clone https://github.com/msys2/msys2-autobuild
-cd msys2-autobuild
-pip3 install -r requirements.txt
-cd ..
+pip3 install -r msys2-autobuild/requirements.txt
 git clone https://github.com/msys2/msys2-devtools
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
-cd msys2-devtools/pacman-build
-docker build .
-docker run --rm -it <id-of-the-finished-build-image> # in a separate session
+docker run --rm -it elieux/ubuntu-pacman:5.2.2-ubuntu20.04 # in a separate session
 sudo apt install libarchive13 libarchive-tools libcurl4 libgpgme11 libssl1.1
 sudo docker cp <id-of-the-running-container>:/tmp/install /
 sudo ldconfig
 sudo pacman
-cd ../..
 ```
