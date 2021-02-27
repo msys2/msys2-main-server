@@ -87,6 +87,7 @@ iptables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
 ip6tables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
 dpkg-reconfigure -plow iptables-persistent
 git clone https://github.com/msys2/msys2-main-server
+echo "GITHUB_TOKEN=<token from https://github.com/settings/tokens with nothing enabled>" > msys2-main-server/github_token.env
 cd msys2-main-server
 sudo docker-compose up -d
 cd ..
@@ -130,7 +131,7 @@ echo StreamLocalBindUnlink yes | sudo tee -a /etc/ssh/sshd_config
 sudo service ssh reload
 
 sudo apt install python3-pip
-echo "export GITHUB_TOKEN=<token from https://github.com/settings/tokens with nothing enabled>" >> ~/.profile
+echo "export $(cat msys2-main-server/github_token.env)" >> ~/.profile
 git clone https://github.com/msys2/msys2-autobuild
 cd msys2-autobuild
 pip3 install -r requirements.txt

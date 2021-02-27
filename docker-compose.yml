@@ -79,6 +79,35 @@ services:
       - "traefik.http.routers.repo-secure.entrypoints=web-secure"
     restart: always
 
+  staging:
+    build: ./staging
+    volumes:
+      - staging-gnupg:/root/.gnupg
+      - staging-repos:/srv/msys2staging
+    env_file:
+      - ./github_token.env
+    restart: always
+
+  stagingrepo:
+    image: nginx
+    volumes:
+      - staging-repos:/usr/share/nginx/html:ro
+      - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.strip-staging.stripprefix.prefixes=/staging"
+      # http
+      - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && PathPrefix(`/staging/`)"
+      - "traefik.http.routers.staging.middlewares=strip-staging"
+      - "traefik.http.routers.staging.entrypoints=web"
+      # https
+      - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && PathPrefix(`/staging/`)"
+      - "traefik.http.routers.staging-secure.tls=true"
+      - "traefik.http.routers.staging-secure.tls.certresolver=le"
+      - "traefik.http.routers.staging-secure.middlewares=strip-staging"
+      - "traefik.http.routers.staging-secure.entrypoints=web-secure"
+    restart: always
+
   rsync:
     build: ./rsync
     volumes:
@@ -92,3 +121,5 @@ services:
 
 volumes:
   letsencrypt:
+  staging-gnupg:
+  staging-repos:

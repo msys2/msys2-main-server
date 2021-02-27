@@ -27,6 +27,13 @@ class Test(unittest.TestCase):
             self.assertTrue("mingw" in out)
             self.assertTrue("msys" in out)
 
+    def test_stagingrepo(self):
+        with urlopen("https://repo.msys2.org/staging/", timeout=self.TIMEOUT) as r:
+            self.assertEqual(r.url, "https://repo.msys2.org/staging/")
+            out = r.read().decode()
+            self.assertTrue("mingw" in out)
+            self.assertTrue("msys" in out)
+
     def test_redirects(self):
         schemes = ["http", "https"]
         tlds = ["org", "com", "net"]

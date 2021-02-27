@@ -1,0 +1,12 @@
+pkgname=("__empty__")
+pkgver=0
+pkgrel=1
+pkgdesc=Placeholder
+arch=('any')
+license=('MIT')
+source=()
+md5sums=()
+
+package() {
+    true
+}
