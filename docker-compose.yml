@@ -10,7 +10,7 @@ services:
       - "--providers.file.directory=/configs/"
       - "--entrypoints.rsync.address=:873"
       - "--entryPoints.web.address=:80"
-      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.web-secure.address=:443"
       - "--certificatesResolvers.le.acme.email=david.macek.0@gmail.com"
       - "--certificatesResolvers.le.acme.storage=/letsencrypt/acme.json"
       - "--certificatesResolvers.le.acme.httpChallenge=true"
@@ -31,15 +31,15 @@ services:
     labels:
       - "traefik.enable=true"
       # http
+      - "traefik.http.middlewares.pkgs-redir.redirectscheme.scheme=https"
       - "traefik.http.routers.pkgs.rule=Host(`packages.msys2.org`)"
       - "traefik.http.routers.pkgs.entrypoints=web"
       - "traefik.http.routers.pkgs.middlewares=pkgs-redir"
-      - "traefik.http.middlewares.pkgs-redir.redirectscheme.scheme=https"
       # https
       - "traefik.http.routers.pkgssecure.rule=Host(`packages.msys2.org`)"
-      - "traefik.http.routers.pkgssecure.entrypoints=websecure"
       - "traefik.http.routers.pkgssecure.tls=true"
       - "traefik.http.routers.pkgssecure.tls.certresolver=le"
+      - "traefik.http.routers.pkgssecure.entrypoints=web-secure"
     environment:
       - FORWARDED_ALLOW_IPS=*
     restart: always
@@ -48,20 +48,18 @@ services:
     image: nginx
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
+      - "traefik.http.middlewares.msys2-redir.redirectregex.replacement=http$${1}://www.msys2.org/$${2}"
       # http
       - "traefik.http.routers.main.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
       - "traefik.http.routers.main.entrypoints=web"
       - "traefik.http.routers.main.middlewares=msys2-redir"
-      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
-      - "traefik.http.middlewares.msys2-redir.redirectregex.replacement=http://www.msys2.org/$${1}"
       # https
-      - "traefik.http.routers.mainsecure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
-      - "traefik.http.routers.mainsecure.entrypoints=websecure"
-      - "traefik.http.routers.mainsecure.tls=true"
-      - "traefik.http.routers.mainsecure.tls.certresolver=le"
-      - "traefik.http.routers.mainsecure.middlewares=msys2-redir-secure"
-      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.regex=^https://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
-      - "traefik.http.middlewares.msys2-redir-secure.redirectregex.replacement=https://www.msys2.org/$${1}"
+      - "traefik.http.routers.main-secure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
+      - "traefik.http.routers.main-secure.tls=true"
+      - "traefik.http.routers.main-secure.tls.certresolver=le"
+      - "traefik.http.routers.main-secure.entrypoints=web-secure"
+      - "traefik.http.routers.main-secure.middlewares=msys2-redir"
     restart: always
 
   repo:
@@ -75,10 +73,10 @@ services:
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo.entrypoints=web"
       # https
-      - "traefik.http.routers.reposecure.rule=Host(`repo.msys2.org`)"
-      - "traefik.http.routers.reposecure.tls=true"
-      - "traefik.http.routers.reposecure.tls.certresolver=le"
-      - "traefik.http.routers.reposecure.entrypoints=websecure"
+      - "traefik.http.routers.repo-secure.rule=Host(`repo.msys2.org`)"
+      - "traefik.http.routers.repo-secure.tls=true"
+      - "traefik.http.routers.repo-secure.tls.certresolver=le"
+      - "traefik.http.routers.repo-secure.entrypoints=web-secure"
     restart: always
 
   rsync:
