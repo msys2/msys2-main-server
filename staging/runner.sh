@@ -20,20 +20,12 @@ update() {
     git -C msys2-autobuild pull
     pip3 install -r msys2-autobuild/requirements.txt
     staging="$(mktemp --tmpdir -d "msys2staging.$(date +"%Y-%m-%d.%H%M%S").XXXXXXXX")"
-    mkdir -p "${staging}"/{mingw,msys}/{sources,i686,x86_64}/
     python3 msys2-autobuild/autobuild.py fetch-assets --fetch-all "${staging}/"
-    for pkg in "${staging}"/*/*/*.{pkg,src}.tar.{gz,xz,zst}
-    do
-        gpg --detach-sign "${pkg}"
-    done
-    repo-add -q -s -v "${staging}/mingw/x86_64/mingw64.db.tar.gz" "${staging}/mingw/x86_64"/*.pkg.tar.{gz,xz,zst} "${empty}"
-    repo-remove -q -s -v "${staging}/mingw/x86_64/mingw64.db.tar.gz" __empty__
-    repo-add -q -s -v "${staging}/mingw/i686/mingw32.db.tar.gz" "${staging}/mingw/i686"/*.pkg.tar.{gz,xz,zst} "${empty}"
-    repo-remove -q -s -v "${staging}/mingw/i686/mingw32.db.tar.gz" __empty__
-    repo-add -q -s -v "${staging}/msys/x86_64/msys.db.tar.gz" "${staging}/msys/x86_64"/*.pkg.tar.{gz,xz,zst} "${empty}"
-    repo-remove -q -s -v "${staging}/msys/x86_64/msys.db.tar.gz" __empty__
-    repo-add -q -s -v "${staging}/msys/i686/msys.db.tar.gz" "${staging}/msys/i686"/*.pkg.tar.{gz,xz,zst} "${empty}"
-    repo-remove -q -s -v "${staging}/msys/i686/msys.db.tar.gz" __empty__
+    echo "${staging}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r mv -t "${staging}/"
+    rm -r "${staging}"/{mingw,msys}/
+    echo "${staging}"/*.{pkg,src}.tar.{gz,xz,zst} | xargs -rn1 gpg --detach-sign
+    repo-add -q -s -v "${staging}/staging.db.tar.gz" "${staging}"/*.pkg.tar.{gz,xz,zst} "${empty}"
+    repo-remove -q -s -v "${staging}/staging.db.tar.gz" __empty__
     touch "${pub}/~updating"
     rsync -rtl --delete-after --delay-updates --safe-links "${staging}/" "${pub}/"
     rm -r "${staging}"
