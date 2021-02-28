@@ -33,6 +33,12 @@ class Test(unittest.TestCase):
             out = r.read().decode()
             self.assertTrue("staging.db" in out)
 
+    def test_stats(self):
+        with urlopen("https://repo.msys2.org/stats/", timeout=self.TIMEOUT) as r:
+            self.assertEqual(r.url, "https://repo.msys2.org/stats/")
+            out = r.read().decode()
+            self.assertTrue("Network Traffic" in out)
+
     def test_redirects(self):
         schemes = ["http", "https"]
         tlds = ["org", "com", "net"]

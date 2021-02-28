@@ -26,6 +26,26 @@ services:
       - letsencrypt:/letsencrypt
     restart: always
 
+  stats:
+    build: ./stats
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.strip-stats.stripprefix.prefixes=/stats"
+      # http
+      - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && PathPrefix(`/stats/`)"
+      - "traefik.http.routers.stats.middlewares=strip-stats"
+      - "traefik.http.routers.stats.entrypoints=web"
+      # https
+      - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && PathPrefix(`/stats/`)"
+      - "traefik.http.routers.stats-secure.tls=true"
+      - "traefik.http.routers.stats-secure.tls.certresolver=le"
+      - "traefik.http.routers.stats-secure.middlewares=strip-stats"
+      - "traefik.http.routers.stats-secure.entrypoints=web-secure"
+    volumes:
+      - /var/lib/vnstat:/var/lib/vnstat:ro
+      - /usr/bin/vnstat:/usr/bin/vnstat:ro
+    restart: always
+
   packages:
     build: https://github.com/msys2/msys2-web.git
     labels:

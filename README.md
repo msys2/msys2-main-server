@@ -8,6 +8,7 @@ Provides:
 * letsencrypt integration
 * packages web interface and API
 * redirects from non-canonical domains
+* network statistics
 
 
 ## Setup
@@ -28,18 +29,7 @@ Provides:
 
 ## Test
 
-Once everything is set up and running you can run
-
-```shell
-> python3 test.py
-....
-----------------------------------------------------------------------
-Ran 4 tests in 5.909s
-
-OK
-```
-
-... which checks if all services are up and responding properly.
+Once everything is set up and running you can run `python3 test.py` which checks if all services are up and responding properly.
 
 
 ## Staging repositories
