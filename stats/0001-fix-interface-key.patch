@@ -1,0 +1,21 @@
+diff -aur vnstat-dashboard-master.orig/app/includes/vnstat.php vnstat-dashboard-master/app/includes/vnstat.php
+--- vnstat-dashboard-master.orig/app/includes/vnstat.php	2019-08-20 11:39:24.000000000 +0200
++++ vnstat-dashboard-master/app/includes/vnstat.php	2021-02-28 22:59:07.164110300 +0100
+@@ -78,7 +78,7 @@
+ 		$vnstatInterfaces = [];
+ 
+ 		foreach($this->vnstatData['interfaces'] as $interface) {
+-			array_push($vnstatInterfaces, $interface['id']);
++			array_push($vnstatInterfaces, $interface['name']);
+ 		}
+ 
+ 		return $vnstatInterfaces;
+@@ -95,7 +95,7 @@
+ 		$trafficData = [];
+ 
+ 		// Get the array index for the chosen interface
+-		$arrayIndex = array_search($interface, array_column($this->vnstatData['interfaces'], 'id'));
++		$arrayIndex = array_search($interface, array_column($this->vnstatData['interfaces'], 'name'));
+  
+ 		if ($timeperiod == 'top10') {
+ 			if ($type == 'table') {
