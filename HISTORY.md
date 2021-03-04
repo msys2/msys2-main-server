@@ -32,7 +32,7 @@ touch /etc/ssh/authorized_keys
 chmod go+r /etc/ssh/authorized_keys
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDTLOxKnQyate/y7rJpUxKYUEzQTtQCIxEL7I7EMml0usJ1HsPwekQPMOhx4efX5j8NAtJPeBr9Yp9HR/rtV5vYDdRofyEaEIpsAY7ntxWHGSaFJBsM0Ln/BxjJYlrTDf/JFXjIDiCpYg82BIOHgoOdWh26TE/z7S2Pwjnz/3aFnDsc3QJ76Ibx122q9c0ysY6M5Bn7OznCn7//ks38hhSaq0hix4+aRcEU4OWuIf+0N52WZeOyxqg4JSIyNS5LdyuUHsYDZ/thMfoHYz3z310ayp3oRjrVsWUNMpjzbnzviLfxR4pBX9ZfqVMsVYeKlsygVrkp42qElrwPUdj8+eqsyVltxkOHl4GpPtUYhznnpy2sIsreOBVSN+wam05JeyU+kaOMDMbcguukcQXXieewYhQOVqB2J1daRWaWr+v4ziYuMZc9PaoqqqtToSOwT9gacN2ZBuU68pY/Jd49CmreDW0N3B2rsS9NujYTHiTOl6hI69uEOB4fzrl2+zo8RAk= lazka' >> /etc/ssh/authorized_keys
 echo 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAgEAuwjmwYMkJrI31YmHVIx4D/6rkz3PjatRkd27PQDmP6DF54i0gTWZUaDVCGTf2JujNcdGKbPH4QpY2N69K8lG2T5dCrB61eTiYiF7H+xXV3fuVIhq7JLjg4IEkSp3i5QPjECbq0HYbmMaehZwo+ChuaO/D6rp/okoZTkJU21OCbch9y0n3t0qOLdfoFfVrXpwl5DVFZraXqo2BwRhI5plj3M6BxQl30tiqrz5U1lcJe6ZpigbqbajQqK2Z946UpqxjxN/kT3Vw6epj00F8phJdxyAKHCuQohVTm31j1z21c1qjlGpnV2UtnMVL+2/MtksvGtrSW6HPrv1IIze5UiELL12ObJezf+rAnrLcldXE9YglQC+coEvPzwhUIntdz8IP5wzk29nzeVaoNaHym2GyTi+FWzma1dHpoPW9vGAhOa7t2zXs6kPLyZwMWidLOpeG8ZEoVpDZbzCZdZzcfVFbwwzzE8Zo/+oZCriqTPlncc/HkQuTyjKxYfTMY+bdxx2o/zaHVNscX6GBsKw7j74+3h+Q7/baKvdo3QAawolyl1JMzvMkMskAvsbuF7UWQ5MPOTUKUZKlHvUoxjWPzTnepOSvWc6kJEMr/ZtEY6H3/VqqRkcdho4CmG8I7c7hstwls2JvQxVX3lYB1s5fH3GMAHHUvh4CH3M1pDruxFub9k= elieux' >> /etc/ssh/authorized_keys
-sed -i /etc/ssh/sshd_config -e $'/^AuthorizedKeysFile/{ s/^/#/; a AuthorizedKeysFile /etc/ssh/authorized_keys .ssh/authorized_keys\n }' >> /etc/ssh/sshd_config
+sed -i /etc/ssh/sshd_config -e $'/^AuthorizedKeysFile/{ s/^/#/; a AuthorizedKeysFile /etc/ssh/authorized_keys .ssh/authorized_keys\n }'
 service ssh reload
 
 iptables -F
