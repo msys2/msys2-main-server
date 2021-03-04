@@ -144,9 +144,9 @@ git clone https://github.com/msys2/msys2-autobuild
 pip3 install -r msys2-autobuild/requirements.txt
 git clone https://github.com/msys2/msys2-devtools
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
-docker run --rm -it elieux/ubuntu-pacman:5.2.2-ubuntu20.04 # in a separate session
+docker run --name ubuntu-pacman --rm -it elieux/ubuntu-pacman:5.2.2-ubuntu20.04 # in a separate session
 sudo apt install libarchive13 libarchive-tools libcurl4 libgpgme11 libssl1.1
-sudo docker cp <id-of-the-running-container>:/tmp/install /
+sudo docker exec ubuntu-pacman tar -czf - /etc/{makepkg,pacman}.conf /var/cache/pacman/pkg /var/lib/pacman/ /usr/local/{bin,include,lib,share} | sudo tar -xzf - -C /
 sudo ldconfig
 sudo pacman
 ```
