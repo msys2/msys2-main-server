@@ -33,9 +33,10 @@ services:
       - "traefik.http.middlewares.strip-stats.stripprefix.prefixes=/stats"
       - "traefik.http.middlewares.stats-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
       - "traefik.http.middlewares.stats-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
+      - "traefik.http.middlewares.stats-scheme-redir.redirectscheme.scheme=https"
       # http
       - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
-      - "traefik.http.routers.stats.middlewares=stats-redir,strip-stats"
+      - "traefik.http.routers.stats.middlewares=stats-scheme-redir,stats-redir,strip-stats"
       - "traefik.http.routers.stats.entrypoints=web"
       # https
       - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
@@ -120,9 +121,10 @@ services:
       - "traefik.http.middlewares.strip-staging.stripprefix.prefixes=/staging"
       - "traefik.http.middlewares.staging-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
       - "traefik.http.middlewares.staging-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
+      - "traefik.http.middlewares.staging-scheme-redir.redirectscheme.scheme=https"
       # http
       - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
-      - "traefik.http.routers.staging.middlewares=staging-redir,strip-staging"
+      - "traefik.http.routers.staging.middlewares=staging-scheme-redir,staging-redir,strip-staging"
       - "traefik.http.routers.staging.entrypoints=web"
       # https
       - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
