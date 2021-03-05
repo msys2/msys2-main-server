@@ -42,6 +42,10 @@ class Test(unittest.TestCase):
             self.assertEqual(r.url, "https://repo.msys2.org/stats/")
             out = r.read().decode()
             self.assertTrue("Network Traffic" in out)
+        with urlopen("https://repo.msys2.org/stats", timeout=self.TIMEOUT) as r:
+            self.assertEqual(r.url, "https://repo.msys2.org/stats/")
+            out = r.read().decode()
+            self.assertTrue("Network Traffic" in out)
 
     def test_redirects(self):
         schemes = ["http", "https"]

@@ -31,15 +31,17 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.strip-stats.stripprefix.prefixes=/stats"
+      - "traefik.http.middlewares.stats-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
+      - "traefik.http.middlewares.stats-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
       # http
-      - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && PathPrefix(`/stats/`)"
-      - "traefik.http.routers.stats.middlewares=strip-stats"
+      - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
+      - "traefik.http.routers.stats.middlewares=stats-redir,strip-stats"
       - "traefik.http.routers.stats.entrypoints=web"
       # https
-      - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && PathPrefix(`/stats/`)"
+      - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
       - "traefik.http.routers.stats-secure.tls=true"
       - "traefik.http.routers.stats-secure.tls.certresolver=le"
-      - "traefik.http.routers.stats-secure.middlewares=strip-stats"
+      - "traefik.http.routers.stats-secure.middlewares=stats-redir,strip-stats"
       - "traefik.http.routers.stats-secure.entrypoints=web-secure"
     volumes:
       - /var/lib/vnstat:/var/lib/vnstat:ro
