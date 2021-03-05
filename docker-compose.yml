@@ -116,15 +116,17 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.strip-staging.stripprefix.prefixes=/staging"
+      - "traefik.http.middlewares.staging-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
+      - "traefik.http.middlewares.staging-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
       # http
-      - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && PathPrefix(`/staging/`)"
-      - "traefik.http.routers.staging.middlewares=strip-staging"
+      - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
+      - "traefik.http.routers.staging.middlewares=staging-redir,strip-staging"
       - "traefik.http.routers.staging.entrypoints=web"
       # https
-      - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && PathPrefix(`/staging/`)"
+      - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
       - "traefik.http.routers.staging-secure.tls=true"
       - "traefik.http.routers.staging-secure.tls.certresolver=le"
-      - "traefik.http.routers.staging-secure.middlewares=strip-staging"
+      - "traefik.http.routers.staging-secure.middlewares=staging-redir,strip-staging"
       - "traefik.http.routers.staging-secure.entrypoints=web-secure"
     restart: always
 
