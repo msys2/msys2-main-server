@@ -5,9 +5,6 @@ services:
     image: tecnativa/docker-socket-proxy
     environment:
       - CONTAINERS=1
-      - SERVICES=1
-      - NETWORKS=1
-      - TASKS=1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -16,6 +13,8 @@ services:
 
   reverse-proxy:
     image: traefik:v2.4
+    depends_on:
+      - docker-proxy
     command:
       # - "--api.insecure=true" # for debug interface on 8080
       - "--providers.docker=true"
