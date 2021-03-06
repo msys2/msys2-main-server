@@ -74,10 +74,12 @@ services:
       - "traefik.http.routers.pkgs.entrypoints=web"
       - "traefik.http.routers.pkgs.middlewares=pkgs-redir"
       # https
+      - "traefik.http.middlewares.packages-headers.headers.stsseconds=31536000"
       - "traefik.http.routers.pkgssecure.rule=Host(`packages.msys2.org`)"
       - "traefik.http.routers.pkgssecure.tls=true"
       - "traefik.http.routers.pkgssecure.tls.certresolver=le"
       - "traefik.http.routers.pkgssecure.entrypoints=web-secure"
+      - "traefik.http.routers.pkgssecure.middlewares=packages-headers"
     environment:
       - FORWARDED_ALLOW_IPS=*
     restart: always
