@@ -26,6 +26,7 @@ services:
       - "--entryPoints.web-secure.address=:443"
       - "--certificatesResolvers.le.acme.email=david.macek.0@gmail.com"
       - "--certificatesResolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesResolvers.le.acme.keyType=EC256"
       - "--certificatesResolvers.le.acme.httpChallenge=true"
       - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
     ports:
