@@ -98,7 +98,7 @@ sudo ip6tables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEP
 sudo dpkg-reconfigure -plow iptables-persistent
 git clone https://github.com/msys2/msys2-main-server
 echo "GITHUB_TOKEN=<token from https://github.com/settings/tokens with nothing enabled>" > msys2-main-server/github_token.env
-sudo docker-compose up -d --build --project-directory msys2-main-server
+sudo docker-compose up -d --build -f msys2-main-server/docker-compose.yml --project-directory msys2-main-server
 
 sudo apt install gnupg
 gpg --update-trustdb
