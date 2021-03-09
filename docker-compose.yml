@@ -36,7 +36,7 @@ services:
       # - "8080:8080" # for debug interface on 8080
     volumes:
       - ./reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
-      - letsencrypt:/letsencrypt
+      - letsencrypt:/letsencrypt/
     networks:
       - default
       - docker-sock
@@ -46,22 +46,22 @@ services:
     build: ./stats
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.strip-stats.stripprefix.prefixes=/stats"
-      - "traefik.http.middlewares.stats-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
-      - "traefik.http.middlewares.stats-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
+      - "traefik.http.middlewares.stats-strip.stripprefix.prefixes=/stats"
+      - "traefik.http.middlewares.stats-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
+      - "traefik.http.middlewares.stats-slash-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
       - "traefik.http.middlewares.stats-scheme-redir.redirectscheme.scheme=https"
       # http
       - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
-      - "traefik.http.routers.stats.middlewares=stats-scheme-redir,stats-redir,strip-stats"
+      - "traefik.http.routers.stats.middlewares=stats-scheme-redir,stats-slash-redir,stats-strip"
       - "traefik.http.routers.stats.entrypoints=web"
       # https
       - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
       - "traefik.http.routers.stats-secure.tls=true"
       - "traefik.http.routers.stats-secure.tls.certresolver=le"
-      - "traefik.http.routers.stats-secure.middlewares=stats-redir,strip-stats"
+      - "traefik.http.routers.stats-secure.middlewares=stats-slash-redir,stats-strip"
       - "traefik.http.routers.stats-secure.entrypoints=web-secure"
     volumes:
-      - /var/lib/vnstat:/var/lib/vnstat:ro
+      - /var/lib/vnstat/:/var/lib/vnstat/:ro
       - /usr/bin/vnstat:/usr/bin/vnstat:ro
     restart: always
 
@@ -70,18 +70,18 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.packages-compress.compress=true"
-      # http
-      - "traefik.http.middlewares.pkgs-redir.redirectscheme.scheme=https"
-      - "traefik.http.routers.pkgs.rule=Host(`packages.msys2.org`)"
-      - "traefik.http.routers.pkgs.entrypoints=web"
-      - "traefik.http.routers.pkgs.middlewares=pkgs-redir,packages-compress"
-      # https
+      - "traefik.http.middlewares.packages-scheme-redir.redirectscheme.scheme=https"
       - "traefik.http.middlewares.packages-headers.headers.stsseconds=31536000"
-      - "traefik.http.routers.pkgssecure.rule=Host(`packages.msys2.org`)"
-      - "traefik.http.routers.pkgssecure.tls=true"
-      - "traefik.http.routers.pkgssecure.tls.certresolver=le"
-      - "traefik.http.routers.pkgssecure.entrypoints=web-secure"
-      - "traefik.http.routers.pkgssecure.middlewares=packages-headers,packages-compress"
+      # http
+      - "traefik.http.routers.packages.rule=Host(`packages.msys2.org`)"
+      - "traefik.http.routers.packages.middlewares=packages-scheme-redir,packages-compress"
+      - "traefik.http.routers.packages.entrypoints=web"
+      # https
+      - "traefik.http.routers.packages-secure.rule=Host(`packages.msys2.org`)"
+      - "traefik.http.routers.packages-secure.tls=true"
+      - "traefik.http.routers.packages-secure.tls.certresolver=le"
+      - "traefik.http.routers.packages-secure.middlewares=packages-headers,packages-compress"
+      - "traefik.http.routers.packages-secure.entrypoints=web-secure"
     environment:
       - FORWARDED_ALLOW_IPS=*
     restart: always
@@ -90,24 +90,24 @@ services:
     image: nginx
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.msys2-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
-      - "traefik.http.middlewares.msys2-redir.redirectregex.replacement=http$${1}://www.msys2.org/$${2}"
+      - "traefik.http.middlewares.homepage-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
+      - "traefik.http.middlewares.homepage-redir.redirectregex.replacement=http$${1}://www.msys2.org/$${2}"
       # http
-      - "traefik.http.routers.main.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
-      - "traefik.http.routers.main.entrypoints=web"
-      - "traefik.http.routers.main.middlewares=msys2-redir"
+      - "traefik.http.routers.homepage.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
+      - "traefik.http.routers.homepage.middlewares=homepage-redir"
+      - "traefik.http.routers.homepage.entrypoints=web"
       # https
-      - "traefik.http.routers.main-secure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
-      - "traefik.http.routers.main-secure.tls=true"
-      - "traefik.http.routers.main-secure.tls.certresolver=le"
-      - "traefik.http.routers.main-secure.entrypoints=web-secure"
-      - "traefik.http.routers.main-secure.middlewares=msys2-redir"
+      - "traefik.http.routers.homepage-secure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
+      - "traefik.http.routers.homepage-secure.tls=true"
+      - "traefik.http.routers.homepage-secure.tls.certresolver=le"
+      - "traefik.http.routers.homepage-secure.middlewares=homepage-redir"
+      - "traefik.http.routers.homepage-secure.entrypoints=web-secure"
     restart: always
 
   repo:
     image: nginx
     volumes:
-      - /srv/msys2repo:/usr/share/nginx/html:ro
+      - /srv/msys2repo/:/usr/share/nginx/html/:ro
       - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
@@ -122,10 +122,10 @@ services:
     restart: always
 
   staging:
-    build: ./staging
+    build: ./staging/
     volumes:
-      - staging-gnupg:/root/.gnupg
-      - staging-repos:/srv/msys2staging
+      - staging-gnupg:/root/.gnupg/
+      - staging-repos:/srv/msys2staging/
     env_file:
       - ./github_token.env
     restart: always
@@ -133,30 +133,30 @@ services:
   stagingrepo:
     image: nginx
     volumes:
-      - staging-repos:/usr/share/nginx/html:ro
+      - staging-repos:/usr/share/nginx/html/:ro
       - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.strip-staging.stripprefix.prefixes=/staging"
-      - "traefik.http.middlewares.staging-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
-      - "traefik.http.middlewares.staging-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
+      - "traefik.http.middlewares.staging-strip.stripprefix.prefixes=/staging"
+      - "traefik.http.middlewares.staging-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
+      - "traefik.http.middlewares.staging-slash-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
       - "traefik.http.middlewares.staging-scheme-redir.redirectscheme.scheme=https"
       # http
       - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
-      - "traefik.http.routers.staging.middlewares=staging-scheme-redir,staging-redir,strip-staging"
+      - "traefik.http.routers.staging.middlewares=staging-scheme-redir,staging-slash-redir,staging-strip"
       - "traefik.http.routers.staging.entrypoints=web"
       # https
       - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
       - "traefik.http.routers.staging-secure.tls=true"
       - "traefik.http.routers.staging-secure.tls.certresolver=le"
-      - "traefik.http.routers.staging-secure.middlewares=staging-redir,strip-staging"
+      - "traefik.http.routers.staging-secure.middlewares=staging-slash-redir,staging-strip"
       - "traefik.http.routers.staging-secure.entrypoints=web-secure"
     restart: always
 
   rsync:
-    build: ./rsync
+    build: ./rsync/
     volumes:
-      - /srv/msys2repo:/rsync-volume:ro
+      - /srv/msys2repo/:/rsync-volume/:ro
       - ./rsync/rsyncd.conf:/etc/rsyncd.conf:ro
     labels:
       - "traefik.enable=true"
