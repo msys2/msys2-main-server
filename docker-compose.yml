@@ -69,18 +69,19 @@ services:
     build: https://github.com/msys2/msys2-web.git
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.packages-compress.compress=true"
       # http
       - "traefik.http.middlewares.pkgs-redir.redirectscheme.scheme=https"
       - "traefik.http.routers.pkgs.rule=Host(`packages.msys2.org`)"
       - "traefik.http.routers.pkgs.entrypoints=web"
-      - "traefik.http.routers.pkgs.middlewares=pkgs-redir"
+      - "traefik.http.routers.pkgs.middlewares=pkgs-redir,packages-compress"
       # https
       - "traefik.http.middlewares.packages-headers.headers.stsseconds=31536000"
       - "traefik.http.routers.pkgssecure.rule=Host(`packages.msys2.org`)"
       - "traefik.http.routers.pkgssecure.tls=true"
       - "traefik.http.routers.pkgssecure.tls.certresolver=le"
       - "traefik.http.routers.pkgssecure.entrypoints=web-secure"
-      - "traefik.http.routers.pkgssecure.middlewares=packages-headers"
+      - "traefik.http.routers.pkgssecure.middlewares=packages-headers,packages-compress"
     environment:
       - FORWARDED_ALLOW_IPS=*
     restart: always
