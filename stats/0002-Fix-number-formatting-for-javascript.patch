@@ -1,0 +1,25 @@
+From b2a8a126c9839a53d147b3e9616d30ee16f629d9 Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Sat, 13 Mar 2021 12:02:29 +0100
+Subject: [PATCH] Fix number formatting for javascript
+
+---
+ app/includes/utilities.php | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/includes/utilities.php b/app/includes/utilities.php
+index 351e376..32743c6 100644
+--- a/app/includes/utilities.php
++++ b/app/includes/utilities.php
+@@ -52,7 +52,7 @@ function formatBytesTo($bytes, $delimiter, $decimals = 2) {
+ 
+     $i = array_search($delimiter, $sizes);
+ 
+-    return number_format(($bytes / pow($k, $i)), $decimals);
++    return number_format(($bytes / pow($k, $i)), $decimals, '.', '');
+ }
+ 
+ function kibibytesToBytes($kibibytes, $vnstatJsonVersion) {
+-- 
+2.30.2
+
