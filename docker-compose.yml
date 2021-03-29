@@ -66,7 +66,7 @@ services:
     restart: always
 
   packages:
-    build: https://github.com/msys2/msys2-web.git
+    image: ghcr.io/msys2/msys2-web:latest
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.packages-compress.compress=true"
