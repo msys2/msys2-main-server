@@ -13,6 +13,7 @@ init() {
     then
         gpg --batch --passphrase "" --quick-generate-key "CD (msys2-autobuild)" future-default sign never
     fi
+    rm -rf msys2-autobuild
     git clone https://github.com/msys2/msys2-autobuild
 }
 
