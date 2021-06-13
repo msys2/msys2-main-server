@@ -27,6 +27,12 @@ class Test(unittest.TestCase):
             self.assertTrue("mingw" in out)
             self.assertTrue("msys" in out)
 
+    def test_repo_redirects(self):
+        with urlopen("https://repo.msys2.org/mingw/sources", timeout=self.TIMEOUT) as r:
+            self.assertEqual(r.url, "https://repo.msys2.org/mingw/sources/")
+        with urlopen("http://repo.msys2.org/mingw/sources", timeout=self.TIMEOUT) as r:
+            self.assertEqual(r.url, "http://repo.msys2.org/mingw/sources/")
+
     def test_stagingrepo(self):
         with urlopen("https://repo.msys2.org/staging/", timeout=self.TIMEOUT) as r:
             self.assertEqual(r.url, "https://repo.msys2.org/staging/")
