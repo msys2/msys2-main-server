@@ -164,10 +164,51 @@ services:
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
     restart: always
 
+  redis:
+    image: redis:6-alpine
+    restart: unless-stopped
+    hostname: redis
+
+  geoipupdate:
+    image: maxmindinc/geoipupdate
+    restart: unless-stopped
+    env_file:
+        geopip.env
+    environment:
+      - GEOIPUPDATE_EDITION_IDS=GeoLite2-City GeoLite2-ASN
+      - GEOIPUPDATE_FREQUENCY=24
+    volumes:
+      - geoip-data:/usr/share/GeoIP
+
+  mirrorbits:
+    build: ./mirrorbits
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - geoipupdate
+    volumes:
+      - geoip-data:/usr/share/GeoIP:ro
+      - /srv/msys2repo:/repo-volume:ro
+      - ./mirrorbits/mirrorbits.conf:/etc/mirrorbits.conf:ro
+      - ./mirrorbits/add_mirrors.sh:/add_mirrors.sh:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.mirrorbits-scheme-redir.redirectscheme.scheme=https"
+      # http
+      - "traefik.http.routers.mirrorbits.rule=Host(`mirror.msys2.org`)"
+      - "traefik.http.routers.mirrorbits.entrypoints=web"
+      - "traefik.http.routers.mirrorbits.middlewares=mirrorbits-scheme-redir"
+      # https
+      - "traefik.http.routers.mirrorbits-secure.rule=Host(`mirror.msys2.org`)"
+      - "traefik.http.routers.mirrorbits-secure.tls=true"
+      - "traefik.http.routers.mirrorbits-secure.tls.certresolver=le"
+      - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
+
 volumes:
   letsencrypt:
   staging-gnupg:
   staging-repos:
+  geoip-data:
 
 networks:
   default:
