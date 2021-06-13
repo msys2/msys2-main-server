@@ -170,7 +170,7 @@ services:
     hostname: redis
 
   geoipupdate:
-    image: maxmindinc/geoipupdate
+    image: maxmindinc/geoipupdate:v4
     restart: unless-stopped
     env_file:
         geopip.env
