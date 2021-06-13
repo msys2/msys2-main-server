@@ -23,3 +23,18 @@ mirrorbits enable dotsrc.org
 
 mirrorbits add -http=https://mirror.ufro.cl/msys2/ -rsync=rsync://mirror.ufro.cl/msys2/ ufro.cl
 mirrorbits enable ufro.cl
+
+mirrorbits add -http=https://ftp.nluug.nl/pub/os/windows/msys2/builds/ -rsync=rsync://ftp.nluug.nl/msys2/builds/ nluug.nl
+mirrorbits enable nluug.nl
+
+mirrorbits add -http=https://download.nus.edu.sg/mirror/msys2/ -rsync=rsync://download.nus.edu.sg/msys2/ nus.edu.sg
+mirrorbits enable nus.edu.sg
+
+mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
+mirrorbits enable fastmirror.pp.ua
+
+mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ clarkson.edu
+mirrorbits enable clarkson.edu
+
+mirrorbits add -http=https://ftp.osuosl.org/pub/msys2/ -rsync=rsync://rsync.osuosl.org/msys2/ osuosl.org
+mirrorbits enable osuosl.org
