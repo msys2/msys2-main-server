@@ -12,6 +12,9 @@ mirrorbits enable selfnet.de
 mirrorbits add -country-only -http=https://mirrors.tuna.tsinghua.edu.cn/msys2/ -rsync=rsync://mirror.selfnet.de/msys2/ tsinghua.edu.cn
 mirrorbits enable tsinghua.edu.cn
 
+mirrorbits add -country-only -http=http://mirrors.ustc.edu.cn/msys2/ -rsync=rsync://rsync.mirrors.ustc.edu.cn/repo/msys2/ ustc.edu.cn
+mirrorbits enable ustc.edu.cn
+
 mirrorbits add -http=https://ftp.acc.umu.se/mirror/msys2.org/ -rsync=rsync://ftp.acc.umu.se/mirror/msys2.org/ umu.se
 mirrorbits enable umu.se
 
