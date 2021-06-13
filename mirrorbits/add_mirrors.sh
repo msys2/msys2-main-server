@@ -1,5 +1,8 @@
 #!/bin/bash
 
+mirrorbits add -http=https://repo.msys2.org/ -rsync=rsync://repo.msys2.org/builds/ msys2.org
+mirrorbits enable msys2.org
+
 mirrorbits add -http=https://mirror.yandex.ru/mirrors/msys2/ -rsync=rsync://mirror.yandex.ru/mirrors/msys2/ yandex.ru
 mirrorbits enable yandex.ru
 
