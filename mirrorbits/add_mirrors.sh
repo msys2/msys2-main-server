@@ -18,9 +18,6 @@ mirrorbits enable mirrors.ustc.edu.cn
 mirrorbits add -http=https://ftp.acc.umu.se/mirror/msys2.org/ -rsync=rsync://ftp.acc.umu.se/mirror/msys2.org/ ftp.acc.umu.se
 mirrorbits enable ftp.acc.umu.se
 
-mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
-mirrorbits enable quantum-mirror.hu
-
 mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsync://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
 mirrorbits enable mirrors.dotsrc.org
 
@@ -33,11 +30,16 @@ mirrorbits enable ftp.nluug.nl
 mirrorbits add -http=https://download.nus.edu.sg/mirror/msys2/ -rsync=rsync://download.nus.edu.sg/msys2/ download.nus.edu.sg
 mirrorbits enable download.nus.edu.sg
 
-mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
-mirrorbits enable fastmirror.pp.ua
-
 mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
 mirrorbits enable mirror.clarkson.edu
 
 mirrorbits add -http=https://ftp.osuosl.org/pub/msys2/ -rsync=rsync://rsync.osuosl.org/msys2/ ftp.osuosl.org
 mirrorbits enable ftp.osuosl.org
+
+mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
+# Seems slow
+# mirrorbits enable quantum-mirror.hu
+
+mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
+# Seems slow
+# mirrorbits enable fastmirror.pp.ua
