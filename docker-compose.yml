@@ -168,6 +168,7 @@ services:
     image: redis:6-alpine
     restart: unless-stopped
     hostname: redis
+    entrypoint: redis-server --save "" --appendonly no
 
   geoipupdate:
     image: maxmindinc/geoipupdate:v4

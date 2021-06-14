@@ -8,7 +8,11 @@ RUN apt-get update -y && \
 RUN git clone https://github.com/etix/mirrorbits.git && \
     cd mirrorbits && \
     git checkout eeea0e026d0ca99c7009a91a54369f7c29e87049
+
+COPY 0001-Rework-up-the-mirror-selection-logic.patch mirrorbits
+
 RUN cd mirrorbits && \
+    git apply 0001-Rework-up-the-mirror-selection-logic.patch && \
     mkdir -p dist/usr/bin && \
     make install PREFIX=/usr DESTDIR=dist
 
