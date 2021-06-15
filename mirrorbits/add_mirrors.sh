@@ -21,7 +21,8 @@ mirrorbits enable ftp.acc.umu.se
 mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsync://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
 mirrorbits enable mirrors.dotsrc.org
 
-mirrorbits add -http=https://mirror.ufro.cl/msys2/ -rsync=rsync://mirror.ufro.cl/msys2/ mirror.ufro.cl
+# -continent-only so it doesn't serve users from africa
+mirrorbits add -continent-only -http=https://mirror.ufro.cl/msys2/ -rsync=rsync://mirror.ufro.cl/msys2/ mirror.ufro.cl
 mirrorbits enable mirror.ufro.cl
 
 mirrorbits add -http=https://ftp.nluug.nl/pub/os/windows/msys2/builds/ -rsync=rsync://ftp.nluug.nl/msys2/builds/ ftp.nluug.nl
