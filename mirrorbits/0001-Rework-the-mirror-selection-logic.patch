@@ -1,0 +1,89 @@
+From a7eac820f7bbf4c251a9d364e4377df187bd71a0 Mon Sep 17 00:00:00 2001
+From: Christoph Reiter <reiter.christoph@gmail.com>
+Date: Mon, 14 Jun 2021 22:55:25 +0200
+Subject: [PATCH] Rework the mirror selection logic
+
+It basically comes down to: We never want to skip the closest mirror
+and if there many mirrors near the closest one we want them all
+("near" being constant here)
+---
+ http/selection.go | 45 +++++++++++++++++++--------------------------
+ 1 file changed, 19 insertions(+), 26 deletions(-)
+
+diff --git a/http/selection.go b/http/selection.go
+index e4143b2..2c8ca4b 100644
+--- a/http/selection.go
++++ b/http/selection.go
+@@ -151,11 +151,6 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
+ 		return
+ 	}
+ 
+-	// We're not interested in divisions by zero
+-	if closestMirror == 0 {
+-		closestMirror = math.SmallestNonzeroFloat32
+-	}
+-
+ 	/* Weight distribution for random selection [Probabilistic weight] */
+ 
+ 	// Compute score for each mirror and return the mirrors eligible for weight distribution.
+@@ -164,38 +159,36 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
+ 	// - mirrors targeting the given country (as primary or secondary)
+ 	// - mirrors being in the same AS number
+ 	totalScore := 0
+-	baseScore := int(farthestMirror)
+ 	weights := map[int]int{}
+ 	for i := 0; i < len(mlist); i++ {
+ 		m := &mlist[i]
++		var boost float32
+ 
+-		m.ComputedScore = baseScore - int(m.Distance) + 1
+-
+-		if m.Distance <= closestMirror*GetConfig().WeightDistributionRange {
+-			score := (float32(baseScore) - m.Distance)
+-			if !utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
+-				score /= 2
+-			}
+-			m.ComputedScore += int(score)
+-		} else if utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
+-			m.ComputedScore += int(float32(baseScore) - (m.Distance * 5))
++		// calculate a boost factor based on the config
++		boost = 1
++		if utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
++			boost *= 1.5
+ 		} else if utils.IsAdditionalCountry(clientInfo, m.CountryFields) {
+-			m.ComputedScore += int(float32(baseScore) - closestMirror)
++			boost *= 1.25
+ 		}
+-
+ 		if m.Asnum == clientInfo.ASNum {
+-			m.ComputedScore += baseScore / 2
++			boost *= 1.5
+ 		}
++		boost *= 1 + (float32(m.Score) / 100)
+ 
+-		floatingScore := float64(m.ComputedScore) + (float64(m.ComputedScore) * (float64(m.Score) / 100)) + 0.5
++		// use the closest mirror and allow some more distance based on it,
++		// boost will allow it to be farther away (default=1000km * 1.5)
++		var thousandKM float32 = 1000
++		var maxDistance float32 = (closestMirror + (thousandKM * GetConfig().WeightDistributionRange * boost))
+ 
+-		// The minimum allowed score is 1
+-		m.ComputedScore = int(math.Max(floatingScore, 1))
++		// score based on distance
++		var score int = int(10000 * ((closestMirror + 1) / (m.Distance + 1)) * boost)
++		m.ComputedScore = 0;
+ 
+-		if m.ComputedScore > baseScore {
+-			// The weight must always be > 0 to not break the randomization below
+-			totalScore += m.ComputedScore - baseScore
+-			weights[m.ID] = m.ComputedScore - baseScore
++		if m.Distance <= maxDistance {
++			m.ComputedScore = score;
++			totalScore += score
++			weights[m.ID] = score
+ 		}
+ 	}
+ 
+-- 
+2.30.2
+
