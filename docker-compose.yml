@@ -168,6 +168,8 @@ services:
     image: redis:6-alpine
     restart: unless-stopped
     hostname: redis
+    # We don't do file hashing with mirrorbits, so we don't need
+    # any persistence and can start fresh each time
     entrypoint: redis-server --save "" --appendonly no
 
   geoipupdate:
