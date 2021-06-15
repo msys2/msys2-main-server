@@ -183,6 +183,12 @@ services:
     volumes:
       - geoip-data:/usr/share/GeoIP
 
+  cron:
+  build: ./cron
+  restart: unless-stopped
+  volumes:
+    - /srv/msys2repo:/repo-volume
+
   mirrorbits:
     build: ./mirrorbits
     restart: unless-stopped
