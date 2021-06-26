@@ -37,10 +37,10 @@ mirrorbits enable mirror.clarkson.edu
 mirrorbits add -http=https://ftp.osuosl.org/pub/msys2/ -rsync=rsync://rsync.osuosl.org/msys2/ ftp.osuosl.org
 mirrorbits enable ftp.osuosl.org
 
-mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
+# mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 # Seems slow
 # mirrorbits enable quantum-mirror.hu
 
-mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
+# mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
 # Seems slow
 # mirrorbits enable fastmirror.pp.ua
