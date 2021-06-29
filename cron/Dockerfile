@@ -7,6 +7,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p /var/spool/cron/crontabs
 RUN mkdir -p /repo-volume
-RUN echo '*/5 * * * * date +%s > /repo-volume/trace' > /var/spool/cron/crontabs/root
+RUN echo '*/5 * * * * date +%s > /repo-volume/lastsync' > /var/spool/cron/crontabs/root
 
 ENTRYPOINT [ "tini", "--", "busybox", "crond", "-f", "-l", "1", "-L", "/dev/stdout" ]
