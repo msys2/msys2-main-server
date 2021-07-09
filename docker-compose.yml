@@ -104,6 +104,24 @@ services:
       - "traefik.http.routers.homepage-secure.entrypoints=web-secure"
     restart: always
 
+  mingw-w64-redir:
+    image: nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.mingw-w64-redir.redirectregex.regex=^http(s?)://mingw-w64[.]net/(.*)$$"
+      - "traefik.http.middlewares.mingw-w64-redir.redirectregex.replacement=http$${1}://www.mingw-w64.net/$${2}"
+      # http
+      - "traefik.http.routers.mingw-w64.rule=Host(`mingw-w64.net`)"
+      - "traefik.http.routers.mingw-w64.middlewares=mingw-w64-redir"
+      - "traefik.http.routers.mingw-w64.entrypoints=web"
+      # https
+      - "traefik.http.routers.mingw-w64-secure.rule=Host(`mingw-w64.net`)"
+      - "traefik.http.routers.mingw-w64-secure.tls=true"
+      - "traefik.http.routers.mingw-w64-secure.tls.certresolver=le"
+      - "traefik.http.routers.mingw-w64-secure.middlewares=mingw-w64-redir"
+      - "traefik.http.routers.mingw-w64-secure.entrypoints=web-secure"
+    restart: always
+
   repo:
     image: nginx
     volumes:

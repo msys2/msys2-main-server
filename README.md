@@ -25,6 +25,9 @@ Provides:
   * www.msys2.com
   * msys2.net
   * www.msys2.net
+  * mingw-w64.net
+  * NOT www.mingw-w64.net, that is on GitHub Pages.
+  * NOT (www.)mingw-w64.org, that is hosted elsewhere.
 
 
 ## Test

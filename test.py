@@ -62,6 +62,11 @@ class Test(unittest.TestCase):
             with urlopen(url, timeout=self.TIMEOUT) as r:
                 self.assertTrue(r.url.startswith("https://www.msys2.org"))
                 self.assertEqual(r.status, 200)
+        for scheme in schemes:
+            url = f"{scheme}://mingw-w64.net"
+            with urlopen(url, timeout=self.TIMEOUT) as r:
+                self.assertTrue(r.url.startswith("https://www.mingw-w64.net"))
+                self.assertEqual(r.status, 200)
 
     def test_packages(self):
         with urlopen("http://packages.msys2.org", timeout=self.TIMEOUT) as r:
