@@ -26,7 +26,7 @@ update() {
     python3 msys2-autobuild/autobuild.py fetch-assets --fetch-all --delete "${cache}/"
 
     local staging="$(mktemp --tmpdir -d "msys2staging.$(date +"%Y-%m-%d.%H%M%S").XXXXXXXX")"
-    echo "${cache}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r cp -t "${staging}/"
+    echo "${cache}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r cp -a -t "${staging}/"
     echo "${staging}"/*.{pkg,src}.tar.{gz,xz,zst} | xargs -rn1 gpg --detach-sign
 
     # __empty__ package ensures database exists even if empty
