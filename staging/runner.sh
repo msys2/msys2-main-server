@@ -4,6 +4,7 @@ set -eu
 shopt -s nullglob
 
 pub=/srv/msys2staging
+cache=/tmp/msys2cache
 
 init() {
     local keyname="CD (msys2-autobuild)"
@@ -21,10 +22,11 @@ update() {
     git -C msys2-autobuild pull
     pip3 install -r msys2-autobuild/requirements.txt
 
+    mkdir -p "${cache}/"
+    python3 msys2-autobuild/autobuild.py fetch-assets --fetch-all --delete "${cache}/"
+
     local staging="$(mktemp --tmpdir -d "msys2staging.$(date +"%Y-%m-%d.%H%M%S").XXXXXXXX")"
-    python3 msys2-autobuild/autobuild.py fetch-assets --fetch-all "${staging}/"
-    echo "${staging}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r mv -t "${staging}/"
-    rm -r "${staging}"/{mingw,msys}/
+    echo "${cache}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r cp -t "${staging}/"
     echo "${staging}"/*.{pkg,src}.tar.{gz,xz,zst} | xargs -rn1 gpg --detach-sign
 
     # __empty__ package ensures database exists even if empty
