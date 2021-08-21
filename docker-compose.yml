@@ -12,7 +12,7 @@ services:
     restart: always
 
   reverse-proxy:
-    image: traefik:v2.4
+    image: traefik:v2.5
     depends_on:
       - docker-proxy
     command:
@@ -29,9 +29,12 @@ services:
       - "--certificatesResolvers.le.acme.keyType=EC256"
       - "--certificatesResolvers.le.acme.httpChallenge=true"
       - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
+      - "--experimental.http3=true"
+      - "--entrypoints.web-secure.enablehttp3=true"
     ports:
       - "80:80"
-      - "443:443"
+      - "443:443/tcp"
+      - "443:443/udp"
       - "873:873"
       # - "8080:8080" # for debug interface on 8080
     volumes:
