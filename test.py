@@ -55,17 +55,18 @@ class Test(unittest.TestCase):
 
     def test_redirects(self):
         schemes = ["http", "https"]
-        tlds = ["org", "com", "net"]
         variants = ["www.", ""]
+        tlds = ["org", "com", "net"]
         for scheme, tld, variant in itertools.product(schemes, tlds, variants):
             url = f"{scheme}://{variant}msys2.{tld}"
             with urlopen(url, timeout=self.TIMEOUT) as r:
                 self.assertTrue(r.url.startswith("https://www.msys2.org"))
                 self.assertEqual(r.status, 200)
-        for scheme in schemes:
-            url = f"{scheme}://mingw-w64.net"
+        tlds = ["org", "net"]
+        for scheme, tld, variant in itertools.product(schemes, tlds, variants):
+            url = f"{scheme}://{variant}mingw-w64.{tld}"
             with urlopen(url, timeout=self.TIMEOUT) as r:
-                self.assertTrue(r.url.startswith("https://www.mingw-w64.net"))
+                self.assertTrue(r.url.startswith("https://www.mingw-w64.org"))
                 self.assertEqual(r.status, 200)
 
     def test_packages(self):
