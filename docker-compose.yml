@@ -118,7 +118,7 @@ services:
       - "traefik.http.routers.mingw-w64.middlewares=mingw-w64-redir"
       - "traefik.http.routers.mingw-w64.entrypoints=web"
       # https
-      - "traefik.http.routers.mingw-w64-secure.rule=Host(`mingw-w46.org`, `mingw-w64.net`, `www.mingw-w64.net`)"
+      - "traefik.http.routers.mingw-w64-secure.rule=Host(`mingw-w64.org`, `mingw-w64.net`, `www.mingw-w64.net`)"
       - "traefik.http.routers.mingw-w64-secure.tls=true"
       - "traefik.http.routers.mingw-w64-secure.tls.certresolver=le"
       - "traefik.http.routers.mingw-w64-secure.middlewares=mingw-w64-redir"
