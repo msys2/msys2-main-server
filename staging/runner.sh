@@ -16,7 +16,6 @@ init() {
     fi
     rm -rf msys2-autobuild
     git clone https://github.com/msys2/msys2-autobuild
-    echo 'COMPRESSZST=(zstd -c -T0 --ultra -20 -)' >> /etc/makepkg.conf
 }
 
 update() {
@@ -31,6 +30,7 @@ update() {
     echo "${staging}"/*.{pkg,src}.tar.{gz,xz,zst} | xargs -rn1 gpg --detach-sign
 
     # __empty__ package ensures database exists even if empty
+    export ZSTD_CLEVEL=19
     repo-add -q -s -v "${staging}/staging.db.tar.zst" "${staging}"/*.pkg.tar.{gz,xz,zst} "__empty__-0-1-any.pkg.tar.gz"
     repo-remove -q -s -v "${staging}/staging.db.tar.zst" __empty__
     gpg --verify "${staging}/staging.db.tar.zst"{.sig,}
