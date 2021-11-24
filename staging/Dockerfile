@@ -64,6 +64,7 @@ RUN apt update \
     libcurl4 \
     libgpgme11 \
     libssl1.1 \
+    zstd \
   && rm -Rf /var/{cache/apt,lib/apt/lists,log/{alternatives.log,apt,dpkg.log}}
 
 COPY --from=build /tmp/install /
