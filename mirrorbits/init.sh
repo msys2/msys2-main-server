@@ -26,4 +26,7 @@ if [ -f "add_mirrors.sh" ]; then
     source add_mirrors.sh
 fi
 
+# Save redis DB to disk
+redis-cli -h redis BGSAVE SCHEDULE
+
 wait $pid
