@@ -34,8 +34,9 @@ mirrorbits enable ftp.nluug.nl
 mirrorbits add -http=https://download.nus.edu.sg/mirror/msys2/ -rsync=rsync://download.nus.edu.sg/msys2/ download.nus.edu.sg
 mirrorbits enable download.nus.edu.sg
 
-mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
-mirrorbits enable mirror.clarkson.edu
+# mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
+# Disabled because it is overwhelmed a lot: https://github.com/msys2/MSYS2-packages/issues/2726
+# mirrorbits enable mirror.clarkson.edu
 
 mirrorbits add -http=https://ftp.osuosl.org/pub/msys2/ -rsync=rsync://rsync.osuosl.org/msys2/ ftp.osuosl.org
 mirrorbits enable ftp.osuosl.org
