@@ -34,10 +34,6 @@ mirrorbits enable ftp.nluug.nl
 mirrorbits add -http=https://download.nus.edu.sg/mirror/msys2/ -rsync=rsync://download.nus.edu.sg/msys2/ download.nus.edu.sg
 mirrorbits enable download.nus.edu.sg
 
-# mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
-# Disabled because it is overwhelmed a lot: https://github.com/msys2/MSYS2-packages/issues/2726
-# mirrorbits enable mirror.clarkson.edu
-
 mirrorbits add -http=https://ftp.osuosl.org/pub/msys2/ -rsync=rsync://rsync.osuosl.org/msys2/ ftp.osuosl.org
 mirrorbits enable ftp.osuosl.org
 
@@ -46,6 +42,13 @@ mirrorbits enable mirror.internet.asn.au
 
 mirrorbits add -http=https://repo.extreme-ix.org/msys2/ -rsync=rsync://repo.extreme-ix.org/msys2/ repo.extreme-ix.org
 mirrorbits enable repo.extreme-ix.org
+
+mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu/msys2/ mirror.umd.edu
+mirrorbits enable mirror.umd.edu
+
+# mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
+# Disabled because it is overwhelmed a lot: https://github.com/msys2/MSYS2-packages/issues/2726
+# mirrorbits enable mirror.clarkson.edu
 
 # mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 # Seems slow
