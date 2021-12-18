@@ -13,10 +13,10 @@ ReplaceMessages=[["^\\[!\\[[^\\]]+\\]\\(https?:\\/\\/files\\.gitter\\.im\\/[^\\/
 [irc.oftc]
 Server="irc.oftc.net:6697"
 Nick="msys2-on-discord"
-Password=""
+NickServNick="nickserv"
+NickServPassword=""
 UseTLS=true
 SkipTLSVerify=false
-## RunCommands=["PRIVMSG nickserv :IDENTIFY <pwd> msys2-on-discord"]
 RemoteNickFormat="<{NICK}> "
 IgnoreNicks="minifox"
 
