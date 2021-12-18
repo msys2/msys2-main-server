@@ -18,6 +18,7 @@ UseTLS=true
 SkipTLSVerify=false
 ## RunCommands=["PRIVMSG nickserv :IDENTIFY <pwd> msys2-on-discord"]
 RemoteNickFormat="<{NICK}> "
+IgnoreNicks="minifox"
 
 [[gateway]]
 name="gitter"
