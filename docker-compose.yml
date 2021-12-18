@@ -234,6 +234,14 @@ services:
       - "traefik.http.routers.mirrorbits-secure.tls.certresolver=le"
       - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
 
+  imbridge:
+    image: 42wim/matterbridge:1
+    restart: unless-stopped
+    env_file:
+      - ./imbridge.env
+    volumes:
+      - ./imbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro
+
 volumes:
   letsencrypt:
   staging-gnupg:

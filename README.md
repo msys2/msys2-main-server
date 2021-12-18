@@ -9,6 +9,7 @@ Provides:
 * packages web interface and API
 * redirects from non-canonical domains
 * network statistics
+* instant messaging bridge between Discord and Gitter / OFTC IRC
 
 
 ## Setup

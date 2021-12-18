@@ -1,0 +1,44 @@
+[discord.msys2]
+Token=""
+Server="792780131906617355"
+RemoteNickFormat="<{NICK}> "
+AutoWebhooks=true
+
+[gitter.msys2]
+Token=""
+RemoteNickFormat="<{NICK}> "
+#This improves the situation where a gitter user uploads a picture/file, just relay the link instead of the Markdown
+ReplaceMessages=[["^\\[!\\[[^\\]]+\\]\\(https?:\\/\\/files\\.gitter\\.im\\/[^\\/]+\\/[^\\/]+\\/[^\\/]+\\/thumb\\/[^\\)]+\\)\\]\\(([^\\)]+)\\)$", "$1"], ["\\[[^\\]]+\\]\\((https:\\/\\/files\\.gitter\\.im\\/[^\\/]+\\/[^\\/]+\\/[^\\/]+\\/[^\\)]+)\\)$", "$1"]]
+
+[irc.oftc]
+Server="irc.oftc.net:6697"
+Nick="msys2-on-discord"
+Password=""
+UseTLS=true
+SkipTLSVerify=false
+## RunCommands=["PRIVMSG nickserv :IDENTIFY <pwd> msys2-on-discord"]
+RemoteNickFormat="<{NICK}> "
+
+[[gateway]]
+name="gitter"
+enable=true
+
+[[gateway.inout]]
+account="discord.msys2"
+channel="gitter"
+
+[[gateway.inout]]
+account="gitter.msys2"
+channel="msys2/msys2"
+
+[[gateway]]
+name="oftc"
+enable=true
+
+[[gateway.inout]]
+account="discord.msys2"
+channel="irc"
+
+[[gateway.inout]]
+account="irc.oftc"
+channel="#msys2"
