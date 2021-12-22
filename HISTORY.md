@@ -155,7 +155,7 @@ mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
 
 sudo apt install libarchive13 libarchive-tools libcurl4 libgpgme11 libssl1.1 zstd
 cd msys2-main-server/staging
-./install_to_host.sh
-ldconfig
-pacman --version
+sudo ./install_to_host.sh
+sudo ldconfig
+sudo pacman --version
 ```
