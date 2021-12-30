@@ -18,6 +18,9 @@ mirrorbits enable mirrors.ustc.edu.cn
 mirrorbits add -country-only -http=https://mirror.nju.edu.cn/msys2/ -rsync=rsync://mirror.nju.edu.cn/msys2/ mirror.nju.edu.cn
 mirrorbits enable mirror.nju.edu.cn
 
+mirrorbits add -country-only -http=https://mirrors.bfsu.edu.cn/msys2/ -rsync=rsync://mirrors.bfsu.edu.cn/msys2/ mirrors.bfsu.edu.cn
+mirrorbits enable mirrors.bfsu.edu.cn
+
 mirrorbits add -http=https://ftp.acc.umu.se/mirror/msys2.org/ -rsync=rsync://ftp.acc.umu.se/mirror/msys2.org/ ftp.acc.umu.se
 mirrorbits enable ftp.acc.umu.se
 
