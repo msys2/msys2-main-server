@@ -12,7 +12,7 @@ services:
     restart: always
 
   reverse-proxy:
-    image: traefik:v2.5
+    image: traefik:v2.6
     depends_on:
       - docker-proxy
     command:
@@ -30,7 +30,7 @@ services:
       - "--certificatesResolvers.le.acme.httpChallenge=true"
       - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
       - "--experimental.http3=true"
-      - "--entrypoints.web-secure.enablehttp3=true"
+      - "--entrypoints.web-secure.http3"
     ports:
       - "80:80"
       - "443:443/tcp"
