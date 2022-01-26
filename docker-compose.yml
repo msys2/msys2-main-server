@@ -31,6 +31,24 @@ services:
       - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
       - "--experimental.http3=true"
       - "--entrypoints.web-secure.http3"
+      # Access logs: Which request+status from which IP using which User-Agent?
+      - "--accesslog=true"
+      - "--accesslog.bufferingsize=100"
+      - "--accesslog.format=json"
+      - "--accesslog.fields.defaultmode=drop"
+      - "--accesslog.fields.names.RequestHost=keep"
+      - "--accesslog.fields.names.RequestMethod=keep"
+      - "--accesslog.fields.names.RequestPath=keep"
+      - "--accesslog.fields.names.RequestPort=keep"
+      - "--accesslog.fields.names.RequestProtocol=keep"
+      - "--accesslog.fields.names.ClientHost=keep"
+      - "--accesslog.fields.names.DownstreamStatus=keep"
+      - "--accesslog.fields.headers.defaultmode=drop"
+      - "--accesslog.fields.headers.names.User-Agent=keep"
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "20"
     ports:
       - "80:80"
       - "443:443/tcp"
