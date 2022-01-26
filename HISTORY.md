@@ -72,8 +72,8 @@ mkdir /home/repo
 chown -R repo:repo /home/repo
 chmod go-rwx -R /home/repo
 
-# Switch to a logging driver with log rotate by default to avoid disk space exhaustion
-echo '{"log-driver": "local"}' > /etc/docker/daemon.json
+# Enable log rotation to avoid disk space exhaustion
+echo '{"log-driver": "json-file", "log-opts": {"max-size": "20m", "max-file": "5"}}' > /etc/docker/daemon.json
 ```
 
 As `repo`:
