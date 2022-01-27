@@ -234,7 +234,7 @@ services:
     restart: unless-stopped
     logging: *default-logging
     env_file:
-        geopip.env
+        geoip.env
     environment:
       - GEOIPUPDATE_EDITION_IDS=GeoLite2-City GeoLite2-ASN
       - GEOIPUPDATE_FREQUENCY=24
