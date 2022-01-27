@@ -20,4 +20,4 @@ jobs:
       - name: Check docker-compose setup
         run: |
           touch geopip.env github_token.env imbridge.env
-          docker-compose config -q
+          docker-compose config
