@@ -1,4 +1,4 @@
-name: 'check'
+name: 'server'
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 4 * * *'
 
 jobs:
-  check:
+  server:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

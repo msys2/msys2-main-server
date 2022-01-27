@@ -1,4 +1,4 @@
-name: 'check'
+name: 'test'
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  check:
+  test:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
