@@ -1,0 +1,22 @@
+name: 'check'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync python3 ca-certificates
+
+      - name: Test server
+        run: |
+          python3 test.py
