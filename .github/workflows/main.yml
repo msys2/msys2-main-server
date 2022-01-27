@@ -1,0 +1,23 @@
+name: 'check'
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      - name: Check docker-compose setup
+        run: |
+          touch geopip.env github_token.env imbridge.env
+          docker-compose config -q
