@@ -48,6 +48,6 @@ while true
 do
     echo "Creating a new staging repo"
     update || true
-    echo "Waiting 30 minutes"
-    sleep 30m
+    echo "Waiting 15 minutes"
+    sleep 15m
 done
