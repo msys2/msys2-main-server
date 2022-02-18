@@ -156,3 +156,14 @@ sudo ./install_to_host.sh
 sudo ldconfig
 sudo pacman --version
 ```
+
+## Maintenance
+
+Rebooting:
+
+```bash
+# "up -d" all docker containers and see if everything works if re-created, to avoid changes there
+reboot
+# wait until it's up again
+gpgconf --launch dirmngr
+```
