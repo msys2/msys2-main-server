@@ -52,9 +52,8 @@ mirrorbits enable repo.extreme-ix.org
 mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu/msys2/ mirror.umd.edu
 mirrorbits enable mirror.umd.edu
 
-# mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
-# Disabled because it is overwhelmed a lot: https://github.com/msys2/MSYS2-packages/issues/2726
-# mirrorbits enable mirror.clarkson.edu
+mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
+mirrorbits enable mirror.clarkson.edu
 
 # mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 # Seems slow
