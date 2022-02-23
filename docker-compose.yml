@@ -164,13 +164,17 @@ services:
       - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.repo-scheme-redir.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.repo-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
+      - "traefik.http.routers.repo.middlewares=repo-scheme-redir"
       - "traefik.http.routers.repo.entrypoints=web"
       # https
       - "traefik.http.routers.repo-secure.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo-secure.tls=true"
       - "traefik.http.routers.repo-secure.tls.certresolver=le"
+      - "traefik.http.routers.repo-secure.middlewares=repo-headers"
       - "traefik.http.routers.repo-secure.entrypoints=web-secure"
     restart: always
 
