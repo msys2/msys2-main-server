@@ -81,6 +81,7 @@ services:
       - "traefik.http.middlewares.stats-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
       - "traefik.http.middlewares.stats-slash-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
       - "traefik.http.middlewares.stats-scheme-redir.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.stats-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.stats.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
       - "traefik.http.routers.stats.middlewares=stats-scheme-redir,stats-slash-redir,stats-strip"
@@ -89,7 +90,7 @@ services:
       - "traefik.http.routers.stats-secure.rule=Host(`repo.msys2.org`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
       - "traefik.http.routers.stats-secure.tls=true"
       - "traefik.http.routers.stats-secure.tls.certresolver=le"
-      - "traefik.http.routers.stats-secure.middlewares=stats-slash-redir,stats-strip"
+      - "traefik.http.routers.stats-secure.middlewares=stats-slash-redir,stats-strip,stats-headers"
       - "traefik.http.routers.stats-secure.entrypoints=web-secure"
     volumes:
       - /var/lib/vnstat/:/var/lib/vnstat/:ro
@@ -125,6 +126,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.middlewares.homepage-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
       - "traefik.http.middlewares.homepage-redir.redirectregex.replacement=http$${1}://www.msys2.org/$${2}"
+      - "traefik.http.middlewares.homepage-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.homepage.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
       - "traefik.http.routers.homepage.middlewares=homepage-redir"
@@ -133,7 +135,7 @@ services:
       - "traefik.http.routers.homepage-secure.rule=Host(`msys2.org`, `msys2.com`, `www.msys2.com`, `msys2.net`, `www.msys2.net`)"
       - "traefik.http.routers.homepage-secure.tls=true"
       - "traefik.http.routers.homepage-secure.tls.certresolver=le"
-      - "traefik.http.routers.homepage-secure.middlewares=homepage-redir"
+      - "traefik.http.routers.homepage-secure.middlewares=homepage-redir,homepage-headers"
       - "traefik.http.routers.homepage-secure.entrypoints=web-secure"
     restart: always
 
@@ -144,6 +146,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.middlewares.mingw-w64-redir.redirectregex.regex=^http(s?)://(?:www[.])?mingw-w64[.](?:org|net)/(.*)$$"
       - "traefik.http.middlewares.mingw-w64-redir.redirectregex.replacement=http$${1}://www.mingw-w64.org/$${2}"
+      - "traefik.http.middlewares.mingw-w64-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.mingw-w64.rule=Host(`mingw-w64.org`, `mingw-w64.net`, `www.mingw-w64.net`)"
       - "traefik.http.routers.mingw-w64.middlewares=mingw-w64-redir"
@@ -152,7 +155,7 @@ services:
       - "traefik.http.routers.mingw-w64-secure.rule=Host(`mingw-w64.org`, `mingw-w64.net`, `www.mingw-w64.net`)"
       - "traefik.http.routers.mingw-w64-secure.tls=true"
       - "traefik.http.routers.mingw-w64-secure.tls.certresolver=le"
-      - "traefik.http.routers.mingw-w64-secure.middlewares=mingw-w64-redir"
+      - "traefik.http.routers.mingw-w64-secure.middlewares=mingw-w64-redir,mingw-w64-headers"
       - "traefik.http.routers.mingw-w64-secure.entrypoints=web-secure"
     restart: always
 
@@ -200,6 +203,7 @@ services:
       - "traefik.http.middlewares.staging-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
       - "traefik.http.middlewares.staging-slash-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
       - "traefik.http.middlewares.staging-scheme-redir.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.staging-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.staging.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
       - "traefik.http.routers.staging.middlewares=staging-scheme-redir,staging-slash-redir,staging-strip"
@@ -208,7 +212,7 @@ services:
       - "traefik.http.routers.staging-secure.rule=Host(`repo.msys2.org`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
       - "traefik.http.routers.staging-secure.tls=true"
       - "traefik.http.routers.staging-secure.tls.certresolver=le"
-      - "traefik.http.routers.staging-secure.middlewares=staging-slash-redir,staging-strip"
+      - "traefik.http.routers.staging-secure.middlewares=staging-slash-redir,staging-strip,staging-headers"
       - "traefik.http.routers.staging-secure.entrypoints=web-secure"
     restart: always
 
@@ -267,6 +271,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.mirrorbits-scheme-redir.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.mirrorbits-headers.headers.stsseconds=31536000"
       # http
       - "traefik.http.routers.mirrorbits.rule=Host(`mirror.msys2.org`)"
       - "traefik.http.routers.mirrorbits.entrypoints=web"
@@ -275,6 +280,7 @@ services:
       - "traefik.http.routers.mirrorbits-secure.rule=Host(`mirror.msys2.org`)"
       - "traefik.http.routers.mirrorbits-secure.tls=true"
       - "traefik.http.routers.mirrorbits-secure.tls.certresolver=le"
+      - "traefik.http.routers.mirrorbits-secure.middlewares=mirrorbits-headers"
       - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
 
   imbridge:
