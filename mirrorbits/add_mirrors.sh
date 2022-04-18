@@ -56,6 +56,9 @@ mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.cl
 # https://github.com/msys2/MSYS2-packages/issues/2892#issuecomment-1077529042
 # mirrorbits enable mirror.clarkson.edu
 
+mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
+mirrorbits enable mirror2.sandyriver.net
+
 # mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 # Seems slow
 # mirrorbits enable quantum-mirror.hu
