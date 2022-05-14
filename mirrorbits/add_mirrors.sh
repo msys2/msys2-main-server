@@ -6,8 +6,9 @@ mirrorbits enable repo.msys2.org
 mirrorbits add -http=https://mirror.yandex.ru/mirrors/msys2/ -rsync=rsync://mirror.yandex.ru/mirrors/msys2/ mirror.yandex.ru
 mirrorbits enable mirror.yandex.ru
 
-mirrorbits add -http=https://mirror.selfnet.de/msys2/ -rsync=rsync://mirror.selfnet.de/msys2/ mirror.selfnet.de
-mirrorbits enable mirror.selfnet.de
+# https://github.com/msys2/msys2.github.io/issues/204
+# mirrorbits add -http=https://mirror.selfnet.de/msys2/ -rsync=rsync://mirror.selfnet.de/msys2/ mirror.selfnet.de
+# mirrorbits enable mirror.selfnet.de
 
 mirrorbits add -country-only -http=https://mirrors.tuna.tsinghua.edu.cn/msys2/ -rsync=rsync://mirrors.tuna.tsinghua.edu.cn/msys2/ mirrors.tuna.tsinghua.edu.cn
 mirrorbits enable mirrors.tuna.tsinghua.edu.cn
@@ -53,8 +54,7 @@ mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu
 mirrorbits enable mirror.umd.edu
 
 mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
-# https://github.com/msys2/MSYS2-packages/issues/2892#issuecomment-1077529042
-# mirrorbits enable mirror.clarkson.edu
+mirrorbits enable mirror.clarkson.edu
 
 mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
 mirrorbits enable mirror2.sandyriver.net
