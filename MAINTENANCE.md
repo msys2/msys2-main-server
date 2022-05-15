@@ -3,10 +3,30 @@
 # Rebooting
 
 ```bash
+ssh root@msys2.appfleet.io
 # "up -d" all docker containers and see if everything works if re-created, to avoid changes there
 reboot
 # wait until it's up again
 gpgconf --launch dirmngr
+```
+
+# Updating the Server
+
+```bash
+ssh root@msys2.appfleet.io
+apt update
+apt full-upgrade
+```
+
+# Update Docker Services
+
+```bash
+ssh root@msys2.appfleet.io
+cd /home/repo/msys2-main-server/
+docker-compose pull
+docker-compose build --parallel --no-cache
+docker-compose up -d
+docker system prune --all --force
 ```
 
 # Updating the Repo
