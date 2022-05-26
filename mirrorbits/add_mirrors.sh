@@ -6,9 +6,8 @@ mirrorbits enable repo.msys2.org
 mirrorbits add -http=https://mirror.yandex.ru/mirrors/msys2/ -rsync=rsync://mirror.yandex.ru/mirrors/msys2/ mirror.yandex.ru
 mirrorbits enable mirror.yandex.ru
 
-# https://github.com/msys2/msys2.github.io/issues/204
-# mirrorbits add -http=https://mirror.selfnet.de/msys2/ -rsync=rsync://mirror.selfnet.de/msys2/ mirror.selfnet.de
-# mirrorbits enable mirror.selfnet.de
+mirrorbits add -http=https://mirror.selfnet.de/msys2/ -rsync=rsync://mirror.selfnet.de/msys2/ mirror.selfnet.de
+mirrorbits enable mirror.selfnet.de
 
 mirrorbits add -country-only -http=https://mirrors.tuna.tsinghua.edu.cn/msys2/ -rsync=rsync://mirrors.tuna.tsinghua.edu.cn/msys2/ mirrors.tuna.tsinghua.edu.cn
 mirrorbits enable mirrors.tuna.tsinghua.edu.cn
