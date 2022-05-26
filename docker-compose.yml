@@ -120,7 +120,7 @@ services:
     restart: always
 
   redir:
-    image: nginx
+    image: nginx:1.22
     logging: *default-logging
     labels:
       - "traefik.enable=true"
@@ -140,7 +140,7 @@ services:
     restart: always
 
   mingw-w64-redir:
-    image: nginx
+    image: nginx:1.22
     logging: *default-logging
     labels:
       - "traefik.enable=true"
@@ -160,7 +160,7 @@ services:
     restart: always
 
   repo:
-    image: nginx
+    image: nginx:1.22
     logging: *default-logging
     volumes:
       - /srv/msys2repo/:/usr/share/nginx/html/:ro
@@ -192,7 +192,7 @@ services:
     restart: always
 
   stagingrepo:
-    image: nginx
+    image: nginx:1.22
     logging: *default-logging
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
