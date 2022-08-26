@@ -1,7 +1,8 @@
 #!/bin/bash
 
-mirrorbits add -http=https://repo.msys2.org/ -rsync=rsync://repo.msys2.org/builds/ repo.msys2.org
-mirrorbits enable repo.msys2.org
+# mirrorbits add -http=https://repo.msys2.org/ -rsync=rsync://repo.msys2.org/builds/ repo.msys2.org
+# It's configured as a fallback and we have enough mirrors now, so let it focus on redirecting
+# mirrorbits enable repo.msys2.org
 
 mirrorbits add -http=https://mirror.yandex.ru/mirrors/msys2/ -rsync=rsync://mirror.yandex.ru/mirrors/msys2/ mirror.yandex.ru
 mirrorbits enable mirror.yandex.ru
