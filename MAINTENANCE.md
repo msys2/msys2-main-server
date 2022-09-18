@@ -6,7 +6,7 @@
 ssh root@msys2.appfleet.io
 # "up -d" all docker containers and see if everything works if re-created, to avoid changes there
 reboot
-# wait until it's up again
+# wait until it's up again (~1-2 minutes)
 gpgconf --launch dirmngr
 ```
 
