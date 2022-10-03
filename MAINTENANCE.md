@@ -52,3 +52,9 @@ ssh root@msys2.appfleet.io
 cd /home/repo/msys2-main-server/
 docker-compose exec mirrorbits mirrorbits refresh
 ```
+
+# Block an IP that is misusing the service
+
+```bash
+iptables -I DOCKER-USER 1 -s x.x.x.x -j DRO
+```
