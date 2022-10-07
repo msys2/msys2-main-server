@@ -56,5 +56,8 @@ docker-compose exec mirrorbits mirrorbits refresh
 # Block an IP that is misusing the service
 
 ```bash
-iptables -I DOCKER-USER 1 -s x.x.x.x -j DRO
+iptables -I DOCKER-USER 1 -s x.x.x.x -j DROP
 ```
+Then add a note to https://github.com/msys2/msys2-main-server/issues/16
+
+TODO: persisting the iptables rules?
