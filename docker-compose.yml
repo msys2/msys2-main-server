@@ -2,10 +2,7 @@ version: '3.4'
 
 x-logging:
   &default-logging
-  driver: 'json-file'
-  options:
-    max-size: '20m'
-    max-file: '5'
+  driver: 'journald'
 
 services:
   docker-proxy:
@@ -53,11 +50,7 @@ services:
       - "--accesslog.fields.names.DownstreamStatus=keep"
       - "--accesslog.fields.headers.defaultmode=drop"
       - "--accesslog.fields.headers.names.User-Agent=keep"
-    logging:
-      << : *default-logging
-      options:
-        max-size: "50m"
-        max-file: "20"
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443/tcp"

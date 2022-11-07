@@ -71,6 +71,15 @@ usermod -p '*' repo
 mkdir /home/repo
 chown -R repo:repo /home/repo
 chmod go-rwx -R /home/repo
+
+# logging config
+echo "[Journal]
+MaxFileSec=1day
+MaxRetentionSec=2week
+RateLimitIntervalSec=0
+RateLimitBurst=0
+SystemMaxUse=10G" > /etc/systemd/journald.conf.d/msys2.conf
+systemctl force-reload systemd-journald
 ```
 
 As `repo`:
