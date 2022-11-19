@@ -79,7 +79,8 @@ MaxRetentionSec=2week
 RateLimitIntervalSec=0
 RateLimitBurst=0
 SystemMaxUse=20G
-SystemMaxFileSize=1G" > /etc/systemd/journald.conf.d/msys2.conf
+SystemMaxFileSize=1G
+ForwardToSyslog=no" > /etc/systemd/journald.conf.d/msys2.conf
 systemctl force-reload systemd-journald
 ```
 
