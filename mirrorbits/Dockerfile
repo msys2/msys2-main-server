@@ -1,4 +1,4 @@
-FROM ubuntu:focal as build
+FROM ubuntu:jammy as build
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -16,7 +16,7 @@ RUN cd mirrorbits && \
     mkdir -p dist/usr/bin && \
     make install PREFIX=/usr DESTDIR=dist
 
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 COPY --from=build /mirrorbits/dist /
 
