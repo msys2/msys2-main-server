@@ -276,6 +276,27 @@ services:
       - "traefik.http.routers.mirrorbits-secure.middlewares=mirrorbits-headers"
       - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
 
+  autobuild-controller:
+    build: https://github.com/lazka/msys2-autobuild-controller.git#add-docker
+    restart: unless-stopped
+    logging: *default-logging
+    volumes:
+      - ./autobuild-controller:/app/instance:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.autobuild-controller-scheme-redir.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.autobuild-controller-headers.headers.stsseconds=31536000"
+      # http
+      - "traefik.http.routers.autobuild-controller.rule=Host(`autobuildcontroller.msys2.org`)"
+      - "traefik.http.routers.autobuild-controller.entrypoints=web"
+      - "traefik.http.routers.autobuild-controller.middlewares=autobuild-controller-scheme-redir"
+      # https
+      - "traefik.http.routers.autobuild-controller-secure.rule=Host(`autobuildcontroller.msys2.org`)"
+      - "traefik.http.routers.autobuild-controller-secure.tls=true"
+      - "traefik.http.routers.autobuild-controller-secure.tls.certresolver=le"
+      - "traefik.http.routers.autobuild-controller-secure.middlewares=autobuild-controller-headers"
+      - "traefik.http.routers.autobuild-controller-secure.entrypoints=web-secure"
+
   imbridge:
     image: 42wim/matterbridge:1
     restart: unless-stopped

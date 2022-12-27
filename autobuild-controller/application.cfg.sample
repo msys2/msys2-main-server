@@ -1,0 +1,23 @@
+# vim: set ft=python :
+
+from permissions import *
+
+SECRET_KEY = ''
+FERNET_SECRET_KEY = '' # generate with cryptography.fernet.Fernet.generate_key()
+DEBUG = True
+SESSION_COOKIE_SECURE = False
+
+# Set these values to match your GitHub app settings.
+GITHUB_APP_ID = 123456
+GITHUB_APP_KEY_FILE = '' # will be loaded via open_instance_resource, contents stored in GITHUB_APP_KEY
+GITHUB_CLIENT_ID = ''
+GITHUB_CLIENT_SECRET = ''
+GITHUB_WEBHOOK_SECRET = ''
+
+ACL = AccessControlList({
+    Principal('User', 'admin'): AccessRights.ALL_ACCESS,
+    Principal('User', 'lurker'): AccessRights.NO_ACCESS,
+    Principal('User', 'collaborator'): AccessRights.TRIGGER_RUN|AccessRights.BREAK_CYCLES
+})
+
+AUTOBUILD_FORKS = frozenset(('msys2', 'msys2-arm'))
