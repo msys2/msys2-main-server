@@ -21,25 +21,37 @@ RemoteNickFormat="<{NICK}> "
 IgnoreNicks="minifox"
 
 [[gateway]]
-name="gitter"
+name="gitter-msys2"
 enable=true
 
 [[gateway.inout]]
 account="discord.msys2"
-channel="gitter"
+channel="gitter-msys2"
 
 [[gateway.inout]]
 account="gitter.msys2"
 channel="msys2/msys2"
 
 [[gateway]]
-name="oftc"
+name="oftc-msys2"
 enable=true
 
 [[gateway.inout]]
 account="discord.msys2"
-channel="irc"
+channel="irc-msys2"
 
 [[gateway.inout]]
 account="irc.oftc"
 channel="#msys2"
+
+[[gateway]]
+name="oftc-mingw-w64"
+enable=true
+
+[[gateway.inout]]
+account="discord.msys2"
+channel="irc-mingw-w64"
+
+[[gateway.inout]]
+account="irc.oftc"
+channel="#mingw-w64"
