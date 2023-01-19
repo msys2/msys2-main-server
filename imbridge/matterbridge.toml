@@ -4,11 +4,12 @@ Server="792780131906617355"
 RemoteNickFormat="<{NICK}> "
 AutoWebhooks=true
 
-[gitter.msys2]
-Token=""
+[matrix.msys2]
+Server="https://matrix.org"
+Login="minivox"
+Password=""
 RemoteNickFormat="<{NICK}> "
-#This improves the situation where a gitter user uploads a picture/file, just relay the link instead of the Markdown
-ReplaceMessages=[["^\\[!\\[[^\\]]+\\]\\(https?:\\/\\/files\\.gitter\\.im\\/[^\\/]+\\/[^\\/]+\\/[^\\/]+\\/thumb\\/[^\\)]+\\)\\]\\(([^\\)]+)\\)$", "$1"], ["\\[[^\\]]+\\]\\((https:\\/\\/files\\.gitter\\.im\\/[^\\/]+\\/[^\\/]+\\/[^\\/]+\\/[^\\)]+)\\)$", "$1"]]
+NoHomeServerSuffix=false
 
 [irc.oftc]
 Server="irc.oftc.net:6697"
@@ -29,8 +30,8 @@ account="discord.msys2"
 channel="gitter-msys2"
 
 [[gateway.inout]]
-account="gitter.msys2"
-channel="msys2/msys2"
+account="matrix.msys2"
+channel="#msys2_msys2:gitter.im"
 
 [[gateway]]
 name="oftc-msys2"
