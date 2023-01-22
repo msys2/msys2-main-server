@@ -52,14 +52,15 @@ mirrorbits enable mirror.umd.edu
 mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
 mirrorbits enable mirror.clarkson.edu
 
-mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
-mirrorbits enable mirror2.sandyriver.net
-
 mirrorbits add -http=https://mirror.archlinux.tw/MSYS2/ -rsync=rsync://mirror.archlinux.tw/msys2/ mirror.archlinux.tw
 mirrorbits enable mirror.archlinux.tw
 
 mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 mirrorbits enable quantum-mirror.hu
+
+# mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
+# We got too many timeout errors in GHA CI with this. Unclear what's the problem.
+# mirrorbits enable mirror2.sandyriver.net
 
 # mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
 # Seems slow
