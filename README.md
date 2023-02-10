@@ -20,6 +20,7 @@ Provides:
 * Assign DNS records for:
   * repo.msys2.org
   * packages.msys2.org
+  * mirror.msys2.org
   * autobuildcontroller.msys2.org
   * msys2.org
   * NOT www.msys2.org, that is on GitHub Pages.
