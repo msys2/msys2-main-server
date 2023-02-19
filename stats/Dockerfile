@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 RUN \
     apt update && \
@@ -6,7 +6,7 @@ RUN \
         apache2 \
         composer \
         curl \
-        libapache2-mod-php7.4 \
+        libapache2-mod-php8.1 \
         patchutils \
         unzip \
     && \
@@ -15,9 +15,7 @@ true
 
 WORKDIR /var/www/html/
 RUN rm index.html
-RUN curl -sL https://github.com/alexandermarston/vnstat-dashboard/archive/master.tar.gz | tar -xzf - --wildcards --strip-components=2 'vnstat-dashboard-master/app/*'
-COPY *.patch ./
-RUN echo *.patch | xargs -rn1 patch -p2 -i && rm *.patch
+RUN curl -sL https://github.com/msys2-contrib/vnstat-dashboard/archive/master.tar.gz | tar -xzf - --wildcards --strip-components=2 'vnstat-dashboard-master/app/*'
 RUN composer install
 RUN mkdir -m=0777 templates_c/
 
