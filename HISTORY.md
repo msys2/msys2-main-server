@@ -156,11 +156,13 @@ echo PasswordAuthentication no | sudo tee -a /etc/ssh/sshd_config
 echo PermitEmptyPasswords no | sudo tee -a /etc/ssh/sshd_config
 sudo service ssh reload
 
-sudo apt install python3-pip
+sudo apt install pipx
+pipx install poetry
 echo "export $(cat msys2-main-server/github_token.env)" >> ~/.profile
 git clone https://github.com/msys2/msys2-autobuild
-pip3 install -r msys2-autobuild/requirements.txt
+(cd msys2-autobuild; poetry install)
 git clone https://github.com/msys2/msys2-devtools
+(cd msys2-devtools; poetry install)
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
 
 sudo apt install libarchive13 libarchive-tools libcurl4 libgpgme11 libssl1.1 zstd

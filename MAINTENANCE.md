@@ -37,20 +37,19 @@ cd msys2-devtools
 
 # Add packages to repo
 export GPGKEY="5F944B027F7FE2091985AA2EFA11531AA0AA7F57"
-./msys2-autobuild/autobuild.py fetch-assets --delete ./staging
+(cd msys2-autobuild && poetry run python autobuild.py fetch-assets --delete ../staging)
 ./msys2-devtools/msys2-dbadd
 
 # Prune repo (optional)
-./msys2-devtools/msys2-repo-prune /srv/msys2repo/
+(cd msys2-devtools && poetry run python msys2-repo-prune /srv/msys2repo/)
 
 # Process package removals (if there are any)
-./msys2-devtools/msys2-dbremove-api
+(cd msys2-devtools && poetry run python msys2-dbremove-api)
 
 # Refresh mirrorbits after repo changes
 exit
 ssh root@msys2.appfleet.io
-cd /home/repo/msys2-main-server/
-docker-compose exec mirrorbits mirrorbits refresh
+(cd /home/repo/msys2-main-server/ && docker-compose exec mirrorbits mirrorbits refresh)
 ```
 
 # Block an IP that is misusing the service
