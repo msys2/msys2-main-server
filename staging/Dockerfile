@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS build
+FROM ubuntu:22.04 AS build
 ARG pacman_version=6.0.1
 
 RUN apt update \
@@ -21,6 +21,7 @@ RUN apt update \
     python3-setuptools \
     xsltproc \
     xz-utils \
+    libarchive-tools \
   && rm -Rf /var/{cache/apt,lib/apt/lists,log/{alternatives.log,apt,dpkg.log}}
 
 RUN gpg --update-trustdb \
@@ -55,7 +56,7 @@ RUN { \
   && ninja -C build/ \
   && env DESTDIR=/tmp/install meson install -C build/
 
-FROM ubuntu:20.04 as installed
+FROM ubuntu:22.04 as installed
 RUN apt update \
   && env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     gnupg \
@@ -63,7 +64,7 @@ RUN apt update \
     libarchive-tools \
     libcurl4 \
     libgpgme11 \
-    libssl1.1 \
+    libssl3 \
     zstd \
   && rm -Rf /var/{cache/apt,lib/apt/lists,log/{alternatives.log,apt,dpkg.log}}
 
