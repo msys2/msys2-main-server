@@ -27,7 +27,7 @@ enable=true
 
 [[gateway.inout]]
 account="discord.msys2"
-channel="gitter-msys2"
+channel="matrix-msys2"
 
 [[gateway.inout]]
 account="matrix.msys2"
