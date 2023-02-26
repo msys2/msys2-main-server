@@ -1,0 +1,175 @@
+version: '3.4'
+
+services:
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy
+    environment:
+      - CONTAINERS=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - docker-sock
+    restart: always
+
+  reverse-proxy:
+    image: traefik:v2.9
+    depends_on:
+      - docker-proxy
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.endpoint=tcp://docker-proxy:2375"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/configs/"
+      - "--entrypoints.rsync.address=:873"
+      - "--entryPoints.web.address=:80"
+      # Access logs: Which request+status from which IP using which User-Agent?
+      - "--accesslog=true"
+      - "--accesslog.bufferingsize=100"
+      - "--accesslog.format=json"
+      - "--accesslog.fields.defaultmode=drop"
+      - "--accesslog.fields.names.RequestHost=keep"
+      - "--accesslog.fields.names.RequestMethod=keep"
+      - "--accesslog.fields.names.RequestPath=keep"
+      - "--accesslog.fields.names.RequestPort=keep"
+      - "--accesslog.fields.names.RequestProtocol=keep"
+      - "--accesslog.fields.names.ClientHost=keep"
+      - "--accesslog.fields.names.DownstreamStatus=keep"
+      - "--accesslog.fields.headers.defaultmode=drop"
+      - "--accesslog.fields.headers.names.User-Agent=keep"
+
+    ports:
+      - "9090:80"
+      - "8080:8080"
+      - "873:873"
+    volumes:
+      - ./services/reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
+    networks:
+      - default
+      - docker-sock
+    restart: always
+
+  packages:
+    image: ghcr.io/msys2/msys2-web:latest
+    depends_on:
+      - reverse-proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.packages-compress.compress=true"
+      # http
+      - "traefik.http.routers.packages.rule=Host(`packages.localhost`)"
+      - "traefik.http.routers.packages.middlewares=packages-compress"
+      - "traefik.http.routers.packages.entrypoints=web"
+    environment:
+      - FORWARDED_ALLOW_IPS=*
+    restart: always
+
+  repo:
+    image: nginx:1.22
+    depends_on:
+      - reverse-proxy
+    volumes:
+      - ./devrepo/:/usr/share/nginx/html/:ro
+      - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+    labels:
+      - "traefik.enable=true"
+      # http
+      - "traefik.http.routers.repo.rule=Host(`repo.localhost`)"
+      - "traefik.http.routers.repo.entrypoints=web"
+    restart: always
+
+  staging:
+    build: ./services/staging/
+    depends_on:
+      - reverse-proxy
+    volumes:
+      - staging-gnupg:/root/.gnupg/
+      - staging-repos:/srv/msys2staging/
+    env_file:
+      - ./github_token.env
+    restart: always
+
+  stagingrepo:
+    image: nginx:1.22
+    depends_on:
+      - reverse-proxy
+    volumes:
+      - staging-repos:/usr/share/nginx/html/:ro
+      - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.staging-strip.stripprefix.prefixes=/staging"
+      - "traefik.http.middlewares.staging-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
+      - "traefik.http.middlewares.staging-slash-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
+      # http
+      - "traefik.http.routers.staging.rule=Host(`repo.localhost`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
+      - "traefik.http.routers.staging.middlewares=staging-slash-redir,staging-strip"
+      - "traefik.http.routers.staging.entrypoints=web"
+    restart: always
+
+  rsync:
+    build: ./services/rsync/
+    depends_on:
+      - reverse-proxy
+    volumes:
+      - ./devrepo/:/rsync-volume/:ro
+      - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.rsync.entrypoints=rsync"
+    restart: always
+
+  redis:
+    image: redis:6
+    restart: unless-stopped
+    hostname: redis
+    entrypoint: redis-server --save 3600 1 --loglevel warning
+    volumes:
+      - redis-data:/data
+
+  geoipupdate:
+    image: maxmindinc/geoipupdate:v4
+    restart: unless-stopped
+    env_file:
+      - ./geoip.env
+    environment:
+      - GEOIPUPDATE_EDITION_IDS=GeoLite2-City GeoLite2-ASN
+      - GEOIPUPDATE_FREQUENCY=24
+    volumes:
+      - geoip-data:/usr/share/GeoIP
+
+  cron:
+    build: ./services/cron
+    restart: unless-stopped
+    volumes:
+      - ./devrepo:/repo-volume
+
+  mirrorbits:
+    build: ./services/mirrorbits
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - geoipupdate
+      - reverse-proxy
+    volumes:
+      - geoip-data:/usr/share/GeoIP:ro
+      - ./devrepo:/repo-volume:ro
+      - ./services/mirrorbits/mirrorbits.conf:/etc/mirrorbits.conf:ro
+      - ./services/mirrorbits/add_mirrors.sh:/add_mirrors.sh:ro
+    labels:
+      - "traefik.enable=true"
+      # http
+      - "traefik.http.routers.mirrorbits.rule=Host(`mirror.localhost`)"
+      - "traefik.http.routers.mirrorbits.entrypoints=web"
+
+volumes:
+  staging-gnupg:
+  staging-repos:
+  geoip-data:
+  redis-data:
+
+networks:
+  default:
+  docker-sock:
+    internal: true

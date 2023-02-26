@@ -57,3 +57,21 @@ Include = /etc/pacman.d/mirrorlist.mingw64
 [msys]
 Include = /etc/pacman.d/mirrorlist.msys
 ```
+
+## Local Development
+
+There is a docker-compose variant in docker-compose.dev.yml that only uses HTTP and contains
+a limited set of services for local testing.
+
+It provides the following services:
+
+* http://localhost:8080 - the traefik dashboard
+* http://repo.localhost:9090/
+* http://repo.localhost:9090/staging/
+* http://mirror.localhost:9090/
+* http://packages.localhost
+* rsync://localhost/builds
+
+Run it with `docker-compose -f docker-compose.dev.yml ...`. For example
+`docker-compose -f docker-compose.dev.yml run repo` and then access
+http://repo.localhost:9090/
