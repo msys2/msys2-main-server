@@ -9,7 +9,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - docker-sock
-    restart: always
+    restart: unless-stopped
 
   reverse-proxy:
     image: traefik:v2.9
@@ -47,7 +47,7 @@ services:
     networks:
       - default
       - docker-sock
-    restart: always
+    restart: unless-stopped
 
   packages:
     image: ghcr.io/msys2/msys2-web:latest
@@ -62,7 +62,7 @@ services:
       - "traefik.http.routers.packages.entrypoints=web"
     environment:
       - FORWARDED_ALLOW_IPS=*
-    restart: always
+    restart: unless-stopped
 
   repo:
     image: nginx:1.22
@@ -76,7 +76,7 @@ services:
       # http
       - "traefik.http.routers.repo.rule=Host(`repo.localhost`)"
       - "traefik.http.routers.repo.entrypoints=web"
-    restart: always
+    restart: unless-stopped
 
   staging:
     build: ./services/staging/
@@ -87,7 +87,7 @@ services:
       - staging-repos:/srv/msys2staging/
     env_file:
       - ./github_token.env
-    restart: always
+    restart: unless-stopped
 
   stagingrepo:
     image: nginx:1.22
@@ -105,7 +105,7 @@ services:
       - "traefik.http.routers.staging.rule=Host(`repo.localhost`) && (Path(`/staging`) || PathPrefix(`/staging/`))"
       - "traefik.http.routers.staging.middlewares=staging-slash-redir,staging-strip"
       - "traefik.http.routers.staging.entrypoints=web"
-    restart: always
+    restart: unless-stopped
 
   rsync:
     build: ./services/rsync/
@@ -118,7 +118,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
-    restart: always
+    restart: unless-stopped
 
   redis:
     image: redis:6

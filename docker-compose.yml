@@ -14,7 +14,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - docker-sock
-    restart: always
+    restart: unless-stopped
 
   reverse-proxy:
     image: traefik:v2.9
@@ -63,7 +63,7 @@ services:
     networks:
       - default
       - docker-sock
-    restart: always
+    restart: unless-stopped
 
   stats:
     build: ./services/stats
@@ -90,7 +90,7 @@ services:
     volumes:
       - /var/lib/vnstat/:/var/lib/vnstat/:ro
       - /usr/bin/vnstat:/usr/bin/vnstat:ro
-    restart: always
+    restart: unless-stopped
 
   packages:
     image: ghcr.io/msys2/msys2-web:latest
@@ -114,7 +114,7 @@ services:
       - "traefik.http.routers.packages-secure.entrypoints=web-secure"
     environment:
       - FORWARDED_ALLOW_IPS=*
-    restart: always
+    restart: unless-stopped
 
   redir:
     image: nginx:1.22
@@ -136,7 +136,7 @@ services:
       - "traefik.http.routers.homepage-secure.tls.certresolver=le"
       - "traefik.http.routers.homepage-secure.middlewares=homepage-headers,homepage-redir"
       - "traefik.http.routers.homepage-secure.entrypoints=web-secure"
-    restart: always
+    restart: unless-stopped
 
   mingw-w64-redir:
     image: nginx:1.22
@@ -158,7 +158,7 @@ services:
       - "traefik.http.routers.mingw-w64-secure.tls.certresolver=le"
       - "traefik.http.routers.mingw-w64-secure.middlewares=mingw-w64-headers,mingw-w64-redir"
       - "traefik.http.routers.mingw-w64-secure.entrypoints=web-secure"
-    restart: always
+    restart: unless-stopped
 
   repo:
     image: nginx:1.22
@@ -182,7 +182,7 @@ services:
       - "traefik.http.routers.repo-secure.tls.certresolver=le"
       - "traefik.http.routers.repo-secure.middlewares=repo-headers"
       - "traefik.http.routers.repo-secure.entrypoints=web-secure"
-    restart: always
+    restart: unless-stopped
 
   staging:
     build: ./services/staging/
@@ -192,7 +192,7 @@ services:
       - staging-repos:/srv/msys2staging/
     env_file:
       - ./github_token.env
-    restart: always
+    restart: unless-stopped
 
   stagingrepo:
     image: nginx:1.22
@@ -219,7 +219,7 @@ services:
       - "traefik.http.routers.staging-secure.tls.certresolver=le"
       - "traefik.http.routers.staging-secure.middlewares=staging-headers,staging-slash-redir,staging-strip"
       - "traefik.http.routers.staging-secure.entrypoints=web-secure"
-    restart: always
+    restart: unless-stopped
 
   rsync:
     build: ./services/rsync/
@@ -233,7 +233,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
-    restart: always
+    restart: unless-stopped
 
   redis:
     image: redis:6
