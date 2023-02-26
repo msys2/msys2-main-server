@@ -19,4 +19,5 @@ jobs:
 
       - name: Test server
         run: |
+          cd tests
           python3 test.py
