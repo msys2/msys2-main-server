@@ -189,7 +189,7 @@ services:
     logging: *default-logging
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
-      - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+      - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.staging-strip.stripprefix.prefixes=/staging"
