@@ -82,6 +82,9 @@ SystemMaxUse=20G
 SystemMaxFileSize=1G
 ForwardToSyslog=no" > /etc/systemd/journald.conf.d/msys2.conf
 systemctl force-reload systemd-journald
+
+# use journald for docker logging
+echo '{"log-driver": "journald"}' > /etc/docker/daemon.json
 ```
 
 As `repo`:
