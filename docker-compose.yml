@@ -58,7 +58,7 @@ services:
       - "873:873"
       # - "8080:8080" # for debug interface on 8080
     volumes:
-      - ./reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
+      - ./services/reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
       - letsencrypt:/letsencrypt/
     networks:
       - default
@@ -66,7 +66,7 @@ services:
     restart: always
 
   stats:
-    build: ./stats
+    build: ./services/stats
     logging: *default-logging
     labels:
       - "traefik.enable=true"
@@ -157,7 +157,7 @@ services:
     logging: *default-logging
     volumes:
       - /srv/msys2repo/:/usr/share/nginx/html/:ro
-      - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+      - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.repo-scheme-redir.redirectscheme.scheme=https"
@@ -175,7 +175,7 @@ services:
     restart: always
 
   staging:
-    build: ./staging/
+    build: ./services/staging/
     logging: *default-logging
     volumes:
       - staging-gnupg:/root/.gnupg/
@@ -189,7 +189,7 @@ services:
     logging: *default-logging
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
-      - ./repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
+      - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.staging-strip.stripprefix.prefixes=/staging"
@@ -210,11 +210,11 @@ services:
     restart: always
 
   rsync:
-    build: ./rsync/
+    build: ./services/rsync/
     logging: *default-logging
     volumes:
       - /srv/msys2repo/:/rsync-volume/:ro
-      - ./rsync/rsyncd.conf:/etc/rsyncd.conf:ro
+      - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
@@ -235,7 +235,7 @@ services:
     restart: unless-stopped
     logging: *default-logging
     env_file:
-        geoip.env
+      - ./geoip.env
     environment:
       - GEOIPUPDATE_EDITION_IDS=GeoLite2-City GeoLite2-ASN
       - GEOIPUPDATE_FREQUENCY=24
@@ -243,14 +243,14 @@ services:
       - geoip-data:/usr/share/GeoIP
 
   cron:
-    build: ./cron
+    build: ./services/cron
     restart: unless-stopped
     logging: *default-logging
     volumes:
       - /srv/msys2repo:/repo-volume
 
   mirrorbits:
-    build: ./mirrorbits
+    build: ./services/mirrorbits
     restart: unless-stopped
     logging: *default-logging
     depends_on:
@@ -259,8 +259,8 @@ services:
     volumes:
       - geoip-data:/usr/share/GeoIP:ro
       - /srv/msys2repo:/repo-volume:ro
-      - ./mirrorbits/mirrorbits.conf:/etc/mirrorbits.conf:ro
-      - ./mirrorbits/add_mirrors.sh:/add_mirrors.sh:ro
+      - ./services/mirrorbits/mirrorbits.conf:/etc/mirrorbits.conf:ro
+      - ./services/mirrorbits/add_mirrors.sh:/add_mirrors.sh:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.mirrorbits-scheme-redir.redirectscheme.scheme=https"
@@ -281,7 +281,7 @@ services:
     restart: unless-stopped
     logging: *default-logging
     volumes:
-      - ./autobuild-controller:/app/instance:ro
+      - ./services/autobuild-controller:/app/instance:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.autobuild-controller-scheme-redir.redirectscheme.scheme=https"
@@ -304,7 +304,7 @@ services:
     env_file:
       - ./imbridge.env
     volumes:
-      - ./imbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro
+      - ./services/imbridge/matterbridge.toml:/etc/matterbridge/matterbridge.toml:ro
 
 volumes:
   letsencrypt:

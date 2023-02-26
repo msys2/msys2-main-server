@@ -4,7 +4,7 @@
 
 set -e
 
-mirrors="$(cat mirrorbits/add_mirrors.sh | grep -v '^\s*$\|^\s*\#' | grep -Eo '(http|https)://[a-zA-Z0-9./?=_%:-]*')"
+mirrors="$(cat services/mirrorbits/add_mirrors.sh | grep -v '^\s*$\|^\s*\#' | grep -Eo '(http|https)://[a-zA-Z0-9./?=_%:-]*')"
 
 for mirror in $mirrors
 do
