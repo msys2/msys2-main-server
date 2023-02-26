@@ -19,5 +19,4 @@ jobs:
 
       - name: Test server
         run: |
-          cd tests
-          python3 test.py
+          python3 -m unittest tests/*.py

@@ -36,7 +36,7 @@ Provides:
 
 ## Test
 
-Once everything is set up and running you can run `python3 tests/test.py` which checks if all services are up and responding properly.
+Once everything is set up and running you can run `python3 -m unittest tests/test_server.py` which checks if all services are up and responding properly.
 
 
 ## Staging repositories
