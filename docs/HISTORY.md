@@ -162,8 +162,7 @@ sudo service ssh reload
 sudo apt install pipx
 pipx install poetry
 echo "export $(cat msys2-main-server/github_token.env)" >> ~/.profile
-git clone https://github.com/msys2/msys2-autobuild
-(cd msys2-autobuild; poetry install)
+pipx install git+https://github.com/msys2/msys2-autobuild
 git clone https://github.com/msys2/msys2-devtools
 (cd msys2-devtools; poetry install)
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/

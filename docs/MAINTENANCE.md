@@ -18,6 +18,11 @@ apt update
 apt full-upgrade
 ```
 
+```bash
+# Update Python packages
+pipx upgrade-all
+```
+
 # Update Docker Services
 
 ```bash
@@ -37,7 +42,7 @@ cd msys2-devtools
 
 # Add packages to repo
 export GPGKEY="5F944B027F7FE2091985AA2EFA11531AA0AA7F57"
-(cd msys2-autobuild && poetry run python autobuild.py fetch-assets --delete ../staging)
+msys2-autobuild fetch-assets --delete ./staging
 ./msys2-devtools/msys2-dbadd
 
 # Prune repo (optional)
