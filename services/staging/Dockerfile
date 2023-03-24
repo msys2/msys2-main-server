@@ -1,5 +1,5 @@
 FROM ubuntu:22.04 AS build
-ARG pacman_version=6.0.1
+ARG pacman_version=6.0.2
 
 RUN apt update \
   && env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
