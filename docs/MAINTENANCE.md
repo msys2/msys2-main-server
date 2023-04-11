@@ -1,6 +1,6 @@
 # Maintenance
 
-# Rebooting
+## Rebooting
 
 ```bash
 ssh root@msys2.appfleet.io
@@ -10,7 +10,7 @@ reboot
 gpgconf --launch dirmngr
 ```
 
-# Updating the Server
+## Updating the Server
 
 ```bash
 ssh root@msys2.appfleet.io
@@ -23,7 +23,7 @@ apt full-upgrade
 pipx upgrade-all
 ```
 
-# Update Docker Services
+## Update Docker Services
 
 ```bash
 ssh root@msys2.appfleet.io
@@ -34,7 +34,7 @@ docker-compose up -d
 docker system prune --all --force
 ```
 
-# Updating the Repo
+## Updating the Repo
 
 ```bash
 cd msys2-devtools
@@ -57,7 +57,7 @@ ssh root@msys2.appfleet.io
 (cd /home/repo/msys2-main-server/ && docker-compose exec mirrorbits mirrorbits refresh)
 ```
 
-# Block an IP that is misusing the service
+## Block an IP that is misusing the service
 
 ```bash
 iptables -I DOCKER-USER 1 -s x.x.x.x -j DROP
@@ -65,3 +65,11 @@ iptables -I DOCKER-USER 1 -s x.x.x.x -j DROP
 Then add a note to https://github.com/msys2/msys2-main-server/issues/16
 
 TODO: persisting the iptables rules?
+
+## Update installer
+
+Pulls the installer from github and adjusts the "latest" symlinks.
+
+```bash
+./msys2-devtools/update-installer 2021-02-28
+```
