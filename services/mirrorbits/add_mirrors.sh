@@ -43,9 +43,6 @@ mirrorbits enable ftp.osuosl.org
 mirrorbits add -http=https://mirror.internet.asn.au/pub/msys2/ -rsync=rsync://mirror.internet.asn.au/msys2/ mirror.internet.asn.au
 mirrorbits enable mirror.internet.asn.au
 
-mirrorbits add -http=https://repo.extreme-ix.org/msys2/ -rsync=rsync://repo.extreme-ix.org/msys2/ repo.extreme-ix.org
-mirrorbits enable repo.extreme-ix.org
-
 mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu/msys2/ mirror.umd.edu
 mirrorbits enable mirror.umd.edu
 
@@ -57,6 +54,10 @@ mirrorbits enable mirror.archlinux.tw
 
 mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 mirrorbits enable quantum-mirror.hu
+
+# mirrorbits add -http=https://repo.extreme-ix.org/msys2/ -rsync=rsync://repo.extreme-ix.org/msys2/ repo.extreme-ix.org
+# limited to 250mbit/s until end of may at least
+# mirrorbits enable repo.extreme-ix.org
 
 # mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
 # We got too many timeout errors in GHA CI with this. Unclear what's the problem.
