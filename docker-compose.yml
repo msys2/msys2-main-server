@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
 
   reverse-proxy:
-    image: traefik:v2.9
+    image: traefik:v2.10
     depends_on:
       - docker-proxy
     command:
