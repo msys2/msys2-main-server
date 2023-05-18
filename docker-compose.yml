@@ -245,7 +245,7 @@ services:
       - redis-data:/data
 
   geoipupdate:
-    image: maxmindinc/geoipupdate:v4
+    image: maxmindinc/geoipupdate:v5
     restart: unless-stopped
     logging: *default-logging
     env_file:
