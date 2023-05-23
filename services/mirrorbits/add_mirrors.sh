@@ -59,10 +59,6 @@ mirrorbits enable quantum-mirror.hu
 # limited to 250mbit/s until end of may at least
 # mirrorbits enable repo.extreme-ix.org
 
-# mirrorbits add -http=https://mirror2.sandyriver.net/pub/software/msys2/ -rsync=rsync://mirror2.sandyriver.net/pub/software/msys2/ mirror2.sandyriver.net
-# We got too many timeout errors in GHA CI with this. Unclear what's the problem.
-# mirrorbits enable mirror2.sandyriver.net
-
 # mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
 # Seems slow
 # mirrorbits enable fastmirror.pp.ua
