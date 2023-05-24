@@ -117,7 +117,7 @@ services:
     restart: unless-stopped
 
   redir:
-    image: nginx:1.24
+    image: nginx:1.25
     logging: *default-logging
     depends_on:
       - reverse-proxy
@@ -139,7 +139,7 @@ services:
     restart: unless-stopped
 
   mingw-w64-redir:
-    image: nginx:1.24
+    image: nginx:1.25
     logging: *default-logging
     depends_on:
       - reverse-proxy
@@ -161,7 +161,7 @@ services:
     restart: unless-stopped
 
   repo:
-    image: nginx:1.24
+    image: nginx:1.25
     logging: *default-logging
     depends_on:
       - reverse-proxy
@@ -195,7 +195,7 @@ services:
     restart: unless-stopped
 
   stagingrepo:
-    image: nginx:1.24
+    image: nginx:1.25
     logging: *default-logging
     depends_on:
       - reverse-proxy
