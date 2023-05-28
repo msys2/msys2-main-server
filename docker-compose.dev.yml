@@ -129,7 +129,7 @@ services:
       - redis-data:/data
 
   geoipupdate:
-    image: maxmindinc/geoipupdate:v4
+    image: ghcr.io/maxmind/geoipupdate:v5.1
     restart: unless-stopped
     env_file:
       - ./geoip.env
