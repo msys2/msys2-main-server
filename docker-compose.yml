@@ -236,7 +236,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: redis:6
+    image: redis:7
     restart: unless-stopped
     logging: *default-logging
     hostname: redis
