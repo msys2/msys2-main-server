@@ -52,6 +52,9 @@ mirrorbits enable mirror.archlinux.tw
 mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 mirrorbits enable quantum-mirror.hu
 
+mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
+mirrorbits enable fastmirror.pp.ua
+
 # mirrorbits add -http=https://repo.extreme-ix.org/msys2/ -rsync=rsync://repo.extreme-ix.org/msys2/ repo.extreme-ix.org
 # limited to 250mbit/s until end of may at least
 # mirrorbits enable repo.extreme-ix.org
