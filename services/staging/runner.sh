@@ -23,7 +23,7 @@ update() {
     pip3 install -r msys2-autobuild/requirements.txt
 
     mkdir -p "${cache}/"
-    PYTHONPATH=msys2-autobuild python3 -m msys2_autobuild fetch-assets --fetch-all --delete "${cache}/"
+    PYTHONPATH=msys2-autobuild python3 -m msys2_autobuild fetch-assets --noconfirm --fetch-all --delete "${cache}/"
 
     local staging="$(mktemp --tmpdir -d "msys2staging.$(date +"%Y-%m-%d.%H%M%S").XXXXXXXX")"
     echo "${cache}"/*/*/*.{pkg,src}.tar.{gz,xz,zst} | xargs -r cp -a -t "${staging}/"
