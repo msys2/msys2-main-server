@@ -1,0 +1,59 @@
+From ad3e621aba618f5b4111f259f2b04f629aff680a Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Dec 2023 00:33:41 +0700
+Subject: [PATCH] pubsub: Don't drop messages
+
+As stated in the code explicitly, mirrorbits might drop some messages
+when the channel is full (at the moment it's a buffered channel of size
+10).
+
+I don't know _why_ this behaviour. It's been like this forever, since
+initial commit ebaacce44180c17075f216f8635cf92a6739522e, but at the time
+there was no buffered channels, so maybe there was good reasons that
+don't apply anymore?
+
+What I observe in practice is that, indeed, sometimes the channel is
+full, and mirrorbits does as instructed: it doesn't wait for the
+listener to consume the message, instead it just drop it.
+
+I added some debug logs, did a quick run, and observed that, after a
+mirror scan returned, 7% of the messages were dropped.
+
+Messages being dropped means that the LRU cache might not be notified
+when some entries are updated in the database, hence entries are not
+evicted from the cache. That leads to subtle bugs where mirrorbits has
+wrong information in the cache for a certain amount of time.
+
+If the machine is under load, it might go un-noticed, as entries don't
+stay in the LRU cache for long (I suppose).
+
+However, for cases where there's no load (say testing), outdated entries
+might remain in the LRU cache forever, basically until mirrorbits is
+restarted, as was reported at
+https://github.com/etix/mirrorbits/issues/114.
+
+This commit seems to fix it, by asking mirrorbits to block until it can
+send messages on the channel, instead of dropping it.
+---
+ database/pubsub.go | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/database/pubsub.go b/database/pubsub.go
+index 49498364..9f4ca642 100644
+--- a/database/pubsub.go
++++ b/database/pubsub.go
+@@ -145,12 +145,8 @@ func (p *Pubsub) handleMessage(channel string, data []byte) {
+ 
+ 	listeners := p.extSubscribers[channel]
+ 	for _, listener := range listeners {
+-		select {
+-		case listener <- string(data):
+-		default:
+-			// Don't block if the listener is not available
+-			// and drop the message.
+-		}
++		// Block if the listener is not available
++		listener <- string(data)
+ 	}
+ }
+ 
