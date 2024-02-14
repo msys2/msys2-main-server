@@ -20,7 +20,7 @@ apt full-upgrade
 
 ```bash
 # Update Python packages
-pipx upgrade-all
+pipx reinstall-all
 ```
 
 ## Update Docker Services
