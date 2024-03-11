@@ -1,0 +1,348 @@
+From 9af47858f1f034c104335323509e1b76cc24de35 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 17:06:29 +0700
+Subject: [PATCH 1/6] http: Get file information earlier, don't wait for
+ selection
+
+This is in preparation for the next commit, where we'll add support for
+If-Modified-Since. For that, we need to know the file modTime, so we
+need to call GetFileInfo() early enough.
+
+Calling the function earlier doesn't hurt, and doesn't change anything
+to the logic of the code. As we can see, before this commit:
+- if the function fails, we bail out of Selection() an error, it take us
+  to the line `http.Error(w, err.Error(), http.StatusInternalServerError)`
+- if the function succeeds, we proceed. That includes the case where a
+  file is not found in the Redis DB.
+
+With this commit, this logic is preserved.
+
+Extra notes: (1) `filesystem.NewFileInfo(urlPath)` returns a struct
+where _only_ Path is populated, while (2) `cache.GetFileInfo(urlPath)`
+returns a struct where _at least_ Path is populated. So calling (1) then
+(2) is the same as just calling (2).
+---
+ http/http.go      | 8 +++++++-
+ http/selection.go | 6 ------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/http/http.go b/http/http.go
+index fee5a9ec..a72ea41f 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -231,7 +231,13 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
+ 		return
+ 	}
+ 
+-	fileInfo := filesystem.NewFileInfo(urlPath)
++	// Get details about the requested file
++	fileInfo, err := h.cache.GetFileInfo(urlPath)
++	if err != nil {
++		log.Errorf("Error while fetching Fileinfo: %s", err.Error())
++		http.Error(w, err.Error(), http.StatusInternalServerError)
++		return
++	}
+ 
+ 	remoteIP := network.ExtractRemoteIP(r.Header.Get("X-Forwarded-For"))
+ 	if len(remoteIP) == 0 {
+diff --git a/http/selection.go b/http/selection.go
+index e4143b2a..5b9bd7b2 100644
+--- a/http/selection.go
++++ b/http/selection.go
+@@ -29,12 +29,6 @@ type DefaultEngine struct{}
+ 
+ // Selection returns an ordered list of selected mirror, a list of rejected mirrors and and an error code
+ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *filesystem.FileInfo, clientInfo network.GeoIPRecord) (mlist mirrors.Mirrors, excluded mirrors.Mirrors, err error) {
+-	// Get details about the requested file
+-	*fileInfo, err = cache.GetFileInfo(fileInfo.Path)
+-	if err != nil {
+-		return
+-	}
+-
+ 	// Prepare and return the list of all potential mirrors
+ 	mlist, err = cache.GetMirrors(fileInfo.Path, clientInfo)
+ 	if err != nil {
+
+From 695557a48e0a33f49c1a96e826a0bbc16fac1311 Mon Sep 17 00:00:00 2001
+From: Matthias-Christian Ott <ott@mirix.org>
+Date: Sat, 17 Sep 2022 21:16:52 +0000
+Subject: [PATCH 2/6] http: Evaluate If-Modified-Since header
+
+---
+ http/http.go | 58 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+
+diff --git a/http/http.go b/http/http.go
+index a72ea41f..489cb2b4 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -32,6 +32,18 @@ import (
+ 	"gopkg.in/tylerb/graceful.v1"
+ )
+ 
++// condResult is the result of an HTTP request precondition check.
++// See https://tools.ietf.org/html/rfc7232 section 3.
++type condResult int
++
++const (
++	condNone condResult = iota
++	condTrue
++	condFalse
++)
++
++var unixEpochTime = time.Unix(0, 0)
++
+ var (
+ 	log = logging.MustGetLogger("main")
+ )
+@@ -217,6 +229,47 @@ func (h *HTTP) requestDispatcher(w http.ResponseWriter, r *http.Request) {
+ 	}
+ }
+ 
++// isZeroTime reports whether t is obviously unspecified (either zero or Unix()=0).
++func isZeroTime(t time.Time) bool {
++	return t.IsZero() || t.Equal(unixEpochTime)
++}
++
++func checkIfModifiedSince(r *http.Request, modtime time.Time) condResult {
++	if r.Method != "GET" && r.Method != "HEAD" {
++		return condNone
++	}
++	ims := r.Header.Get("If-Modified-Since")
++	if ims == "" || isZeroTime(modtime) {
++		return condNone
++	}
++	t, err := http.ParseTime(ims)
++	if err != nil {
++		return condNone
++	}
++	// The Last-Modified header truncates sub-second precision so
++	// the modtime needs to be truncated too.
++	modtime = modtime.Truncate(time.Second)
++	if modtime.Before(t) || modtime.Equal(t) {
++		return condFalse
++	}
++	return condTrue
++}
++
++func writeNotModified(w http.ResponseWriter) {
++	// RFC 7232 section 4.1:
++	// a sender SHOULD NOT generate representation metadata other than the
++	// above listed fields unless said metadata exists for the purpose of
++	// guiding cache updates (e.g., Last-Modified might be useful if the
++	// response does not have an ETag field).
++	h := w.Header()
++	delete(h, "Content-Type")
++	delete(h, "Content-Length")
++	if h.Get("Etag") != "" {
++		delete(h, "Last-Modified")
++	}
++	w.WriteHeader(http.StatusNotModified)
++}
++
+ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Context) {
+ 	//XXX it would be safer to recover in case of panic
+ 
+@@ -239,6 +292,11 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
+ 		return
+ 	}
+ 
++	if checkIfModifiedSince(r, fileInfo.ModTime) == condFalse {
++		writeNotModified(w)
++		return
++	}
++
+ 	remoteIP := network.ExtractRemoteIP(r.Header.Get("X-Forwarded-For"))
+ 	if len(remoteIP) == 0 {
+ 		remoteIP = network.RemoteIPFromAddr(r.RemoteAddr)
+
+From b6b23c64b2fd35ac40d3f36c7932ae191047e975 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Mon, 26 Feb 2024 13:58:41 +0700
+Subject: [PATCH 3/6] http: Sync If-Modified-Since with latest
+ go/src/net/http/fs.go
+
+The code for If-Modified-Since was proposed a while ago, and since then
+there were two changes upstream, so let's sync.
+
+1. Include change 59ab6f351a370a27458755dc69f4a837e55a05a6:
+
+```
++	delete(h, "Content-Encoding")
+```
+
+2. Do NOT include change 879f595f7eacbd53d25fe21cac4b2b0cfde36449:
+
+```
+-	if modtime.Before(t) || modtime.Equal(t) {
++	if ret := modtime.Compare(t); ret <= 0 {
+```
+
+`func (Time) Compare` was introduced in Go 1.20 released in Feb 2023,
+that's rather new. In Debian stable (bookworm) we have Go 1.19. So let's
+not include this commit, and let people build mirrorbits with older
+versions of Go if they need to.
+---
+ http/http.go | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/http/http.go b/http/http.go
+index 489cb2b4..676a3c8b 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -264,6 +264,7 @@ func writeNotModified(w http.ResponseWriter) {
+ 	h := w.Header()
+ 	delete(h, "Content-Type")
+ 	delete(h, "Content-Length")
++	delete(h, "Content-Encoding")
+ 	if h.Get("Etag") != "" {
+ 		delete(h, "Last-Modified")
+ 	}
+
+From 410a32752b8e09face9a5b64162c116c1f249055 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 21:41:47 +0700
+Subject: [PATCH 4/6] http: Set Last-Modified header when returning 304 "Not
+ Modified"
+
+A client that sends If-Modified-Since probably cares about the
+Last-Modified time, so let's add it in the response header.
+
+Actually, I have the impression that we could set this header all the
+time, and not only when the request includes If-Modified-Since (assuming
+the file requested was found in the redis db). However I have no idea
+what's the pros and cons, all I can say is: we have the information, so
+why not share it with the client?
+
+Maybe some HTTP guru have an opinion here.
+
+Note that this code was also picked "as is" from go/src/net/http/fs.go.
+---
+ http/http.go | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/http/http.go b/http/http.go
+index 676a3c8b..c05974e9 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -42,6 +42,14 @@ const (
+ 	condFalse
+ )
+ 
++// TimeFormat is the time format to use when generating times in HTTP
++// headers. It is like [time.RFC1123] but hard-codes GMT as the time
++// zone. The time being formatted must be in UTC for Format to
++// generate the correct format.
++//
++// For parsing this time format, see [ParseTime].
++const TimeFormat = "Mon, 02 Jan 2006 15:04:05 GMT"
++
+ var unixEpochTime = time.Unix(0, 0)
+ 
+ var (
+@@ -234,6 +242,12 @@ func isZeroTime(t time.Time) bool {
+ 	return t.IsZero() || t.Equal(unixEpochTime)
+ }
+ 
++func setLastModified(w http.ResponseWriter, modtime time.Time) {
++        if !isZeroTime(modtime) {
++                w.Header().Set("Last-Modified", modtime.UTC().Format(TimeFormat))
++        }
++}
++
+ func checkIfModifiedSince(r *http.Request, modtime time.Time) condResult {
+ 	if r.Method != "GET" && r.Method != "HEAD" {
+ 		return condNone
+@@ -294,6 +308,7 @@ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Contex
+ 	}
+ 
+ 	if checkIfModifiedSince(r, fileInfo.ModTime) == condFalse {
++		setLastModified(w, fileInfo.ModTime)
+ 		writeNotModified(w)
+ 		return
+ 	}
+
+From fa804f8b1bd3a56bc7a8911839007e3522d3b35e Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 22:08:07 +0700
+Subject: [PATCH 5/6] http: Clarify license for code imported from Go
+
+This is BSD-licensed code, so if we use it we must include the license
+(as is done in the file mirrors/lru.go).
+---
+ http/http.go | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+diff --git a/http/http.go b/http/http.go
+index c05974e9..f8840d2f 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -237,6 +237,36 @@ func (h *HTTP) requestDispatcher(w http.ResponseWriter, r *http.Request) {
+ 	}
+ }
+ 
++// The functions below were picked from go/src/net/http/fs.go
++//
++// Copyright 2009 The Go Authors. All rights reserved.
++//
++// Redistribution and use in source and binary forms, with or without
++// modification, are permitted provided that the following conditions are
++// met:
++// 
++//    * Redistributions of source code must retain the above copyright
++// notice, this list of conditions and the following disclaimer.
++//    * Redistributions in binary form must reproduce the above
++// copyright notice, this list of conditions and the following disclaimer
++// in the documentation and/or other materials provided with the
++// distribution.
++//    * Neither the name of Google Inc. nor the names of its
++// contributors may be used to endorse or promote products derived from
++// this software without specific prior written permission.
++// 
++// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
++// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
++// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
++// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
++// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
++// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
++// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
++// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
++// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
++// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
++// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
++
+ // isZeroTime reports whether t is obviously unspecified (either zero or Unix()=0).
+ func isZeroTime(t time.Time) bool {
+ 	return t.IsZero() || t.Equal(unixEpochTime)
+@@ -285,6 +315,8 @@ func writeNotModified(w http.ResponseWriter) {
+ 	w.WriteHeader(http.StatusNotModified)
+ }
+ 
++// End of functions from go/src/net/http/fs.go
++
+ func (h *HTTP) mirrorHandler(w http.ResponseWriter, r *http.Request, ctx *Context) {
+ 	//XXX it would be safer to recover in case of panic
+ 
+
+From 8df1107daedd4110dc45a8b9bb5aa4dbb4b95a0f Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 17:21:28 +0700
+Subject: [PATCH 6/6] Document support for If-Modified-Since
+
+Readme is the best doc we have so far
+---
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/README.md b/README.md
+index 54737a9b..141093bd 100644
+--- a/README.md
++++ b/README.md
+@@ -30,6 +30,7 @@ Mirrorbits is a geographical download redirector written in [Go](https://golang.
+ * Seamless binary upgrade (aka zero downtime upgrade)
+ * [Mirmon](http://www.staff.science.uu.nl/~penni101/mirmon/) support
+ * Full **IPv6** support
++* If-Modified-Since (RFC-7232) support
+ * more...
+ 
+ ## Is it production ready?

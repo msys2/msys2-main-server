@@ -1,0 +1,431 @@
+From 74de678a26057c3c0bff65dfef25c473b4b59be1 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 15:44:10 +0700
+Subject: [PATCH 1/5] cache_test: Some fixes and typos
+
+Some basics first:
+- HMGET returns a slice
+- HGETALL returns a map
+
+There was some confusion, and some HMGET tests expected a map instead of
+a slice, and surprisingly, it all worked and the tests passed...
+
+This commit fixes it, and also fixes some typos.
+---
+ mirrors/cache_test.go | 44 +++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/mirrors/cache_test.go b/mirrors/cache_test.go
+index e02e1db4..7f22fdb2 100644
+--- a/mirrors/cache_test.go
++++ b/mirrors/cache_test.go
+@@ -323,12 +323,12 @@ func TestCache_fetchFileInfoMirror(t *testing.T) {
+ 		t.Fatalf("Error expected, mock command not yet registered")
+ 	}
+ 
+-	cmdGetFileinfomirror := mock.Command("HMGET", "FILEINFO_1_"+testfile.Path, "size", "modTime", "sha1", "sha256", "md5").ExpectMap(map[string]string{
+-		"size":    strconv.FormatInt(testfile.Size, 10),
+-		"modTime": testfile.ModTime.String(),
+-		"sha1":    testfile.Sha1,
+-		"sha256":  testfile.Sha256,
+-		"md5":     testfile.Md5,
++	cmdGetFileinfomirror := mock.Command("HMGET", "FILEINFO_1_"+testfile.Path, "size", "modTime", "sha1", "sha256", "md5").Expect([]interface{}{
++		[]byte(strconv.FormatInt(testfile.Size, 10)),
++		[]byte(testfile.ModTime.String()),
++		[]byte(testfile.Sha1),
++		[]byte(testfile.Sha256),
++		[]byte(testfile.Md5),
+ 	})
+ 
+ 	_, err = c.fetchFileInfoMirror(1, testfile.Path)
+@@ -337,7 +337,7 @@ func TestCache_fetchFileInfoMirror(t *testing.T) {
+ 	}
+ 
+ 	if mock.Stats(cmdGetFileinfomirror) < 1 {
+-		t.Fatalf("HGETALL not executed")
++		t.Fatalf("HMGET not executed")
+ 	}
+ 
+ 	_, ok := c.fimCache.Get("1|" + testfile.Path)
+@@ -420,20 +420,20 @@ func TestCache_GetMirrors(t *testing.T) {
+ 		"longitude": "0.1275",
+ 	})
+ 
+-	cmdGetFileinfomirrorM1 := mock.Command("HMGET", "FILEINFO_1_"+filename, "size", "modTime", "sha1", "sha256", "md5").ExpectMap(map[string]string{
+-		"size":    "44000",
+-		"modTime": "",
+-		"sha1":    "",
+-		"sha256":  "",
+-		"md5":     "",
++	cmdGetFileinfomirrorM1 := mock.Command("HMGET", "FILEINFO_1_"+filename, "size", "modTime", "sha1", "sha256", "md5").Expect([]interface{}{
++		[]byte("44000"),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
+ 	})
+ 
+-	cmdGetFileinfomirrorM2 := mock.Command("HMGET", "FILEINFO_2_"+filename, "size", "modTime", "sha1", "sha256", "md5").ExpectMap(map[string]string{
+-		"size":    "44000",
+-		"modTime": "",
+-		"sha1":    "",
+-		"sha256":  "",
+-		"md5":     "",
++	cmdGetFileinfomirrorM2 := mock.Command("HMGET", "FILEINFO_2_"+filename, "size", "modTime", "sha1", "sha256", "md5").Expect([]interface{}{
++		[]byte("44000"),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
+ 	})
+ 
+ 	mirrors, err := c.GetMirrors(filename, clientInfo)
+@@ -442,7 +442,7 @@ func TestCache_GetMirrors(t *testing.T) {
+ 	}
+ 
+ 	if mock.Stats(cmdGetFilemirrors) < 1 {
+-		t.Fatalf("cmd_get_filemirrors not called")
++		t.Fatalf("cmdGetFilemirrors not called")
+ 	}
+ 	if mock.Stats(cmdGetMirrorM1) < 1 {
+ 		t.Fatalf("cmdGetMirrorM1 not called")
+@@ -451,10 +451,10 @@ func TestCache_GetMirrors(t *testing.T) {
+ 		t.Fatalf("cmdGetMirrorM2 not called")
+ 	}
+ 	if mock.Stats(cmdGetFileinfomirrorM1) < 1 {
+-		t.Fatalf("cmd_get_fileinfomirror_m1 not called")
++		t.Fatalf("cmdGetFileinfomirrorM1 not called")
+ 	}
+ 	if mock.Stats(cmdGetFileinfomirrorM2) < 1 {
+-		t.Fatalf("cmd_get_fileinfomirror_m2 not called")
++		t.Fatalf("cmdGetFileinfomirrorM2 not called")
+ 	}
+ 
+ 	if len(mirrors) != 2 {
+
+From 61761b523c2125c9d668a65422817a709a6b627b Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 16:46:05 +0700
+Subject: [PATCH 2/5] cache_test: Fix the last test in TestCache_GetFileInfo
+
+On the second call to GetFileInfo, we want to ensure that we hit the LRU
+cache. The best way to do that is to ensure that the HMGET Redis command
+is NOT called a second time. Which is easy to do, but was not done, so
+we do it with this commit.
+
+And at the same time, we also drop the check for Redis.ErrNil. This
+check doesn't make much sense actually, since it comes after the second
+call to GetFileInfo, meaning the function was called successfully once
+already. Why would we get ErrNil on the second call?
+
+Plus, as you'll see a few commits after, GetFileInfo never returns
+Redis.ErrNil anyway...
+---
+ mirrors/cache_test.go | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mirrors/cache_test.go b/mirrors/cache_test.go
+index 7f22fdb2..01424d98 100644
+--- a/mirrors/cache_test.go
++++ b/mirrors/cache_test.go
+@@ -14,7 +14,6 @@ import (
+ 	"github.com/etix/mirrorbits/filesystem"
+ 	"github.com/etix/mirrorbits/network"
+ 	. "github.com/etix/mirrorbits/testing"
+-	"github.com/gomodule/redigo/redis"
+ 	_ "github.com/rafaeljusto/redigomock"
+ )
+ 
+@@ -174,11 +173,12 @@ func TestCache_GetFileInfo(t *testing.T) {
+ 	}
+ 
+ 	_, err = c.GetFileInfo(testfile.Path)
+-	if err == redis.ErrNil {
+-		t.Fatalf("Cache not used, request expected to be done once")
+-	} else if err != nil {
++	if err != nil {
+ 		t.Fatalf("Unexpected error: %s", err.Error())
+ 	}
++	if mock.Stats(cmdGetFileinfo) > 1 {
++		t.Fatalf("Cache not used, request expected to be done once")
++	}
+ }
+ 
+ func TestCache_fetchFileMirrors(t *testing.T) {
+
+From efee0803816dd6dfb95bcaeeaaaf60e7b7d0de5d Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 23:28:17 +0700
+Subject: [PATCH 3/5] cache_test: Add a helper to ease comparing
+ filesytem.FileInfo
+
+With this helper, it's now easy to compare the actual struct with the
+expected struct. So we can do a proper check everywhere needs be.
+
+In particular we test that the value returned by the LRU cache is
+correct, which wasn't done before.
+
+This is also in preparation for next commit.
+---
+ mirrors/cache_test.go | 51 +++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 24 deletions(-)
+
+diff --git a/mirrors/cache_test.go b/mirrors/cache_test.go
+index 01424d98..3af49eb0 100644
+--- a/mirrors/cache_test.go
++++ b/mirrors/cache_test.go
+@@ -67,6 +67,28 @@ func TestCache_Clear(t *testing.T) {
+ 	}
+ }
+ 
++func assertFileInfoEqual(t *testing.T, actual *filesystem.FileInfo, expected *filesystem.FileInfo) {
++	t.Helper()
++	if actual.Path != expected.Path {
++		t.Fatalf("Path doesn't match, expected %#v got %#v", expected.Path, actual.Path)
++	}
++	if actual.Size != expected.Size {
++		t.Fatalf("Size doesn't match, expected %#v got %#v", expected.Size, actual.Size)
++	}
++	if !actual.ModTime.Equal(expected.ModTime) {
++		t.Fatalf("ModTime doesn't match, expected %s got %s", expected.ModTime.String(), actual.ModTime.String())
++	}
++	if actual.Sha1 != expected.Sha1 {
++		t.Fatalf("Sha1 doesn't match, expected %#v got %#v", expected.Sha1, actual.Sha1)
++	}
++	if actual.Sha256 != expected.Sha256 {
++		t.Fatalf("Sha256 doesn't match, expected %#v got %#v", expected.Sha256, actual.Sha256)
++	}
++	if actual.Md5 != expected.Md5 {
++		t.Fatalf("Md5 doesn't match, expected %#v got %#v", expected.Md5, actual.Md5)
++	}
++}
++
+ func TestCache_fetchFileInfo(t *testing.T) {
+ 	mock, conn := PrepareRedisTest()
+ 	conn.ConnectPubsub()
+@@ -104,24 +126,7 @@ func TestCache_fetchFileInfo(t *testing.T) {
+ 		t.Fatalf("HMGET not executed")
+ 	}
+ 
+-	if f.Path != testfile.Path {
+-		t.Fatalf("Path doesn't match, expected %#v got %#v", testfile.Path, f.Path)
+-	}
+-	if f.Size != testfile.Size {
+-		t.Fatalf("Size doesn't match, expected %#v got %#v", testfile.Size, f.Size)
+-	}
+-	if !f.ModTime.Equal(testfile.ModTime) {
+-		t.Fatalf("ModTime doesn't match, expected %s got %s", testfile.ModTime.String(), f.ModTime.String())
+-	}
+-	if f.Sha1 != testfile.Sha1 {
+-		t.Fatalf("Sha1 doesn't match, expected %#v got %#v", testfile.Sha1, f.Sha1)
+-	}
+-	if f.Sha256 != testfile.Sha256 {
+-		t.Fatalf("Sha256 doesn't match, expected %#v got %#v", testfile.Sha256, f.Sha256)
+-	}
+-	if f.Md5 != testfile.Md5 {
+-		t.Fatalf("Md5 doesn't match, expected %#v got %#v", testfile.Md5, f.Md5)
+-	}
++	assertFileInfoEqual(t, &f, &testfile)
+ 
+ 	_, ok := c.fiCache.Get(testfile.Path)
+ 	if !ok {
+@@ -166,19 +171,17 @@ func TestCache_GetFileInfo(t *testing.T) {
+ 		t.Fatalf("HMGET not executed")
+ 	}
+ 
+-	// Results are already checked by TestCache_fetchFileInfo
+-	// We only need to check one of them
+-	if !f.ModTime.Equal(testfile.ModTime) {
+-		t.Fatalf("One or more values do not match")
+-	}
++	assertFileInfoEqual(t, &f, &testfile)
+ 
+-	_, err = c.GetFileInfo(testfile.Path)
++	f, err = c.GetFileInfo(testfile.Path)
+ 	if err != nil {
+ 		t.Fatalf("Unexpected error: %s", err.Error())
+ 	}
+ 	if mock.Stats(cmdGetFileinfo) > 1 {
+ 		t.Fatalf("Cache not used, request expected to be done once")
+ 	}
++
++	assertFileInfoEqual(t, &f, &testfile)
+ }
+ 
+ func TestCache_fetchFileMirrors(t *testing.T) {
+
+From ee4ad9a96e3dd44646a1d0fc90c6a579effad934 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 23:29:31 +0700
+Subject: [PATCH 4/5] cache_test: Test fetchFileInfo and GetFileInfo on
+ non-existing files
+
+The tests added in this commit clarify two things:
+- trying to get file info for a file that is not in the Redis database
+  does NOT return Redis.ErrNil, in fact it doesn't return any error, it
+  simply populates the FileInfo struct with the file path, and leave the
+  other fields set to zero
+- this result IS stored in the LRU cache
+---
+ mirrors/cache_test.go | 99 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+
+diff --git a/mirrors/cache_test.go b/mirrors/cache_test.go
+index 3af49eb0..08f1b884 100644
+--- a/mirrors/cache_test.go
++++ b/mirrors/cache_test.go
+@@ -134,6 +134,53 @@ func TestCache_fetchFileInfo(t *testing.T) {
+ 	}
+ }
+ 
++func TestCache_fetchFileInfo_non_existing(t *testing.T) {
++	mock, conn := PrepareRedisTest()
++	conn.ConnectPubsub()
++
++	c := NewCache(conn)
++
++	testfile := filesystem.FileInfo{
++		Path:    "/test/file.tgz",
++		Size:    0,
++		ModTime: time.Time{},
++		Sha1:    "",
++		Sha256:  "",
++		Md5:     "",
++	}
++
++	f, err := c.fetchFileInfo(testfile.Path)
++	if err == nil {
++		t.Fatalf("Error expected, mock command not yet registered")
++	}
++
++	cmdGetFileinfo := mock.Command("HMGET", "FILE_"+testfile.Path, "size", "modTime", "sha1", "sha256", "md5").Expect([]interface{}{
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++	})
++
++	f, err = c.fetchFileInfo(testfile.Path)
++	// fetchFileInfo on a non-existing file doesn't yield Redis.ErrNil
++	if err != nil {
++		t.Fatalf("Unexpected error: %s", err.Error())
++	}
++
++	if mock.Stats(cmdGetFileinfo) < 1 {
++		t.Fatalf("HMGET not executed")
++	}
++
++	assertFileInfoEqual(t, &f, &testfile)
++
++	// Non-existing file are also stored in cache
++	_, ok := c.fiCache.Get(testfile.Path)
++	if !ok {
++		t.Fatalf("Not stored in cache")
++	}
++}
++
+ func TestCache_GetFileInfo(t *testing.T) {
+ 	mock, conn := PrepareRedisTest()
+ 	conn.ConnectPubsub()
+@@ -184,6 +231,58 @@ func TestCache_GetFileInfo(t *testing.T) {
+ 	assertFileInfoEqual(t, &f, &testfile)
+ }
+ 
++func TestCache_GetFileInfo_non_existing(t *testing.T) {
++	mock, conn := PrepareRedisTest()
++	conn.ConnectPubsub()
++
++	c := NewCache(conn)
++
++	testfile := filesystem.FileInfo{
++		Path:    "/test/file.tgz",
++		Size:    0,
++		ModTime: time.Time{},
++		Sha1:    "",
++		Sha256:  "",
++		Md5:     "",
++	}
++
++	_, err := c.GetFileInfo(testfile.Path)
++	if err == nil {
++		t.Fatalf("Error expected, mock command not yet registered")
++	}
++
++	cmdGetFileinfo := mock.Command("HMGET", "FILE_"+testfile.Path, "size", "modTime", "sha1", "sha256", "md5").Expect([]interface{}{
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++		[]byte(""),
++	})
++
++	f, err := c.GetFileInfo(testfile.Path)
++	// GetFileInfo on a non-existing file doesn't yield Redis.ErrNil
++	if err != nil {
++		t.Fatalf("Unexpected error: %s", err.Error())
++	}
++
++	if mock.Stats(cmdGetFileinfo) < 1 {
++		t.Fatalf("HMGET not executed")
++	}
++
++	assertFileInfoEqual(t, &f, &testfile)
++
++	f, err = c.GetFileInfo(testfile.Path)
++	if err != nil {
++		t.Fatalf("Unexpected error: %s", err.Error())
++	}
++	// Non-existing file are also stored in cache
++	if mock.Stats(cmdGetFileinfo) > 1 {
++		t.Fatalf("Cache not used, request expected to be done once")
++	}
++
++	assertFileInfoEqual(t, &f, &testfile)
++}
++
+ func TestCache_fetchFileMirrors(t *testing.T) {
+ 	mock, conn := PrepareRedisTest()
+ 	conn.ConnectPubsub()
+
+From dfe14b45f62a2b4a3328dcda42c125f32d791491 Mon Sep 17 00:00:00 2001
+From: Arnaud Rebillout <arnaudr@kali.org>
+Date: Fri, 8 Mar 2024 17:03:05 +0700
+Subject: [PATCH 5/5] http: Drop useless check for Redis.ErrNil
+
+This is a follow-up of previous commit, where we added new unit tests
+that show that GetFileInfo doesn't return Redis.ErrNil.
+
+Therefore we can drop this useless check.
+
+Grepping through the code, there are a few places where GetFileInfo is
+called, but it's only in this one place that there was a check for
+Redis.ErrNil.
+
+Just to clarify, in case it's not clear: this commit doesn't change
+mirrorbits' behavior, it really removes a check that never triggered.
+After this commit, querying the checksum for a non-existing file still
+returns 404 "Not Found", due to the check `if len(hash) == 0` that comes
+a few lines below.
+---
+ http/http.go | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/http/http.go b/http/http.go
+index fee5a9ec..1664fddd 100644
+--- a/http/http.go
++++ b/http/http.go
+@@ -443,11 +443,9 @@ func (h *HTTP) checksumHandler(w http.ResponseWriter, r *http.Request, ctx *Cont
+ 		return
+ 	}
+ 
++	// Get details about the requested file
+ 	fileInfo, err := h.cache.GetFileInfo(urlPath)
+-	if err == redis.ErrNil {
+-		http.NotFound(w, r)
+-		return
+-	} else if err != nil {
++	if err != nil {
+ 		log.Errorf("Error while fetching Fileinfo: %s", err.Error())
+ 		http.Error(w, http.StatusText(http.StatusServiceUnavailable), http.StatusServiceUnavailable)
+ 		return

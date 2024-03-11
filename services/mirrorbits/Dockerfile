@@ -7,12 +7,16 @@ RUN apt-get update -y && \
 
 RUN git clone https://github.com/etix/mirrorbits.git && \
     cd mirrorbits && \
-    git checkout ef6d09915cd922cef4ad5cfa5e8e228609b664d3
+    git checkout 4e34d9b961a56bd669934acf1fd7d2313128a3d5
 
 COPY 0001-Rework-the-mirror-selection-logic.patch mirrorbits
+COPY 168.patch mirrorbits
+COPY 169.patch mirrorbits
 
 RUN cd mirrorbits && \
     git apply 0001-Rework-the-mirror-selection-logic.patch && \
+    git apply 168.patch && \
+    git apply 169.patch && \
     mkdir -p dist/usr/bin && \
     make install PREFIX=/usr DESTDIR=dist
 
