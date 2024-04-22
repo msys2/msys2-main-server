@@ -22,6 +22,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.file.directory=/configs/"
       - "--entrypoints.rsync.address=:873"
+      - "--entryPoints.rsync.transport.respondingTimeouts.readTimeout=0"
       - "--entryPoints.web.address=:80"
       # Access logs: Which request+status from which IP using which User-Agent?
       - "--accesslog=true"
