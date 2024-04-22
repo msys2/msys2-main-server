@@ -6,6 +6,9 @@ RUN apt-get update && \
   apt-get autoremove -y && \
   rm -rf /var/lib/apt/lists/*
 
+RUN useradd -ms /bin/bash rsyncuser
+USER rsyncuser
+
 EXPOSE 873
 
 CMD ["/usr/bin/rsync", "--verbose", "--no-detach", "--daemon", "--config", "/etc/rsyncd.conf"]
