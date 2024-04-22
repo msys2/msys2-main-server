@@ -129,13 +129,14 @@ services:
       - redis-data:/data
 
   geoipupdate:
-    image: ghcr.io/maxmind/geoipupdate:v6.1
+    image: ghcr.io/maxmind/geoipupdate:v7.0
     restart: unless-stopped
     env_file:
       - ./geoip.env
     environment:
       - GEOIPUPDATE_EDITION_IDS=GeoLite2-City GeoLite2-ASN
       - GEOIPUPDATE_FREQUENCY=24
+      - GEOIPUPDATE_VERBOSE=1
     volumes:
       - geoip-data:/usr/share/GeoIP
 
