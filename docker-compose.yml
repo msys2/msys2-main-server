@@ -27,6 +27,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.file.directory=/configs/"
       - "--entrypoints.rsync.address=:873"
+      - "--entryPoints.rsync.transport.respondingTimeouts.readTimeout=0"
       - "--entryPoints.web.address=:80"
       - "--entryPoints.web-secure.address=:443"
       - "--certificatesResolvers.le.acme.email=david.macek.0@gmail.com"
