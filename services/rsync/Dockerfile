@@ -8,4 +8,4 @@ RUN apt-get update && \
 
 EXPOSE 873
 
-CMD ["/usr/bin/rsync", "--no-detach", "--daemon", "--config", "/etc/rsyncd.conf"]
+CMD ["/usr/bin/rsync", "--verbose", "--no-detach", "--daemon", "--config", "/etc/rsyncd.conf"]
