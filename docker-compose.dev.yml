@@ -119,6 +119,7 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
+      - "traefik.tcp.services.rsync.loadbalancer.proxyprotocol.version=2"
     restart: unless-stopped
 
   redis:

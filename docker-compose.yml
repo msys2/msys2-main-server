@@ -242,6 +242,7 @@ services:
       - "traefik.tcp.routers.rsync-ssl.tls=true"
       - "traefik.tcp.routers.rsync-ssl.tls.certresolver=le"
       - "traefik.tcp.services.rsync.loadbalancer.server.port=873"
+      - "traefik.tcp.services.rsync.loadbalancer.proxyprotocol.version=2"
     restart: unless-stopped
 
   redis:
