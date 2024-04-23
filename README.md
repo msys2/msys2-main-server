@@ -3,7 +3,7 @@
 Provides:
 
 * nginx service for serving installers and packages (ports 80 and 443)
-* rsync server for serving the same (port 873)
+* rsync server for serving the same (port 873, and 874 with SSL)
 * daemon and http server for staging repositories
 * letsencrypt integration
 * packages web interface and API

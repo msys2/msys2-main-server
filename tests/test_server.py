@@ -23,6 +23,15 @@ class TestServer(unittest.TestCase):
         self.assertTrue("mingw" in out)
         self.assertTrue("msys" in out)
 
+    def test_rsync_ssl(self):
+        out = subprocess.check_output(
+            ["rsync-ssl", "--list-only", "rsync://repo.msys2.org/builds/"],
+            universal_newlines=True,
+            timeout=self.TIMEOUT)
+        self.assertTrue("distrib" in out)
+        self.assertTrue("mingw" in out)
+        self.assertTrue("msys" in out)
+
     def test_repo(self):
         with urlopen("https://repo.msys2.org", timeout=self.TIMEOUT) as r:
             self.assertEqual(r.url, "https://repo.msys2.org")

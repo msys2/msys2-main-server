@@ -28,6 +28,8 @@ services:
       - "--providers.file.directory=/configs/"
       - "--entrypoints.rsync.address=:873"
       - "--entryPoints.rsync.transport.respondingTimeouts.readTimeout=0"
+      - "--entrypoints.rsync-ssl.address=:874"
+      - "--entryPoints.rsync-ssl.transport.respondingTimeouts.readTimeout=0"
       - "--entryPoints.web.address=:80"
       - "--entryPoints.web-secure.address=:443"
       - "--certificatesResolvers.le.acme.email=david.macek.0@gmail.com"
@@ -57,6 +59,7 @@ services:
       - "443:443/tcp"
       - "443:443/udp"
       - "873:873"
+      - "874:874"
       # - "8080:8080" # for debug interface on 8080
     volumes:
       - ./services/reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
@@ -234,6 +237,11 @@ services:
       - "traefik.enable=true"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
+      - "traefik.tcp.routers.rsync-ssl.rule=HostSNI(`repo.msys2.org`)"
+      - "traefik.tcp.routers.rsync-ssl.entrypoints=rsync-ssl"
+      - "traefik.tcp.routers.rsync-ssl.tls=true"
+      - "traefik.tcp.routers.rsync-ssl.tls.certresolver=le"
+      - "traefik.tcp.services.rsync.loadbalancer.server.port=873"
     restart: unless-stopped
 
   redis:
