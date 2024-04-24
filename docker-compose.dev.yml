@@ -66,7 +66,7 @@ services:
     restart: unless-stopped
 
   repo:
-    image: nginx:1.24
+    image: nginx:1.26
     depends_on:
       - reverse-proxy
     volumes:
@@ -91,7 +91,7 @@ services:
     restart: unless-stopped
 
   stagingrepo:
-    image: nginx:1.24
+    image: nginx:1.26
     depends_on:
       - reverse-proxy
     volumes:
