@@ -28,9 +28,9 @@ pipx reinstall-all
 ```bash
 ssh root@msys2.appfleet.io
 cd /home/repo/msys2-main-server/
-docker-compose pull
-docker-compose build --parallel --no-cache
-docker-compose up -d
+docker compose pull
+docker compose build --parallel --no-cache
+docker compose up -d
 docker system prune --all --force
 ```
 
@@ -54,7 +54,7 @@ msys2-autobuild fetch-assets --delete ./staging
 # Refresh mirrorbits after repo changes
 exit
 ssh root@msys2.appfleet.io
-(cd /home/repo/msys2-main-server/ && docker-compose exec mirrorbits mirrorbits refresh)
+(cd /home/repo/msys2-main-server/ && docker compose exec mirrorbits mirrorbits refresh)
 ```
 
 ## Block an IP that is misusing the service

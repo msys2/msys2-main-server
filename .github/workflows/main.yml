@@ -15,10 +15,10 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose
+          sudo apt-get install -y docker-compose-v2
 
       - name: Check docker-compose setup
         run: |
           touch geoip.env github_token.env imbridge.env
-          docker-compose config
-          docker-compose -f docker-compose.dev.yml config
+          docker compose config
+          docker compose -f docker-compose.dev.yml config

@@ -106,13 +106,13 @@ sudo mkdir /srv/msys2repo
 sudo chown repo:repo /srv/msys2repo
 rsync -rtlvH --delete-after --delay-updates --safe-links rsync://repo.msys2.org/builds/ /srv/msys2repo/
 
-sudo apt install docker.io docker-compose
+sudo apt install docker.io docker-compose-v2
 sudo iptables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
 sudo ip6tables -I INPUT 5 -p tcp -m multiport --dports http,https,rsync -j ACCEPT
 sudo dpkg-reconfigure -plow iptables-persistent
 git clone https://github.com/msys2/msys2-main-server
 echo "GITHUB_TOKEN=<token from https://github.com/settings/tokens with nothing enabled>" > msys2-main-server/github_token.env
-sudo docker-compose up -d --build -f msys2-main-server/docker-compose.yml --project-directory msys2-main-server
+sudo docker compose up -d --build -f msys2-main-server/docker-compose.yml --project-directory msys2-main-server
 
 sudo apt install gnupg
 gpg --update-trustdb

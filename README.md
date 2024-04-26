@@ -16,7 +16,7 @@ Provides:
 
 * Clone.
 * The storage is pointed to `/srv/msys2repo` so `/srv/msys2repo/mingw/x86_64/` should exist.
-* Run `docker-compose up -d`.
+* Run `docker compose up -d`.
 * Assign DNS records for:
   * repo.msys2.org
   * packages.msys2.org
@@ -72,6 +72,6 @@ It provides the following services:
 * http://packages.localhost
 * rsync://localhost/builds
 
-Run it with `docker-compose -f docker-compose.dev.yml ...`. For example
-`docker-compose -f docker-compose.dev.yml run repo` and then access
+Run it with `docker compose -f docker-compose.dev.yml ...`. For example
+`docker compose -f docker-compose.dev.yml run repo` and then access
 http://repo.localhost:9090/
