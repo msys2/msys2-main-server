@@ -1,4 +1,5 @@
 version: '3.4'
+name: 'msys2-repo'
 
 x-logging:
   &default-logging
