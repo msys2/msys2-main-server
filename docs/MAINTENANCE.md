@@ -57,6 +57,12 @@ ssh root@msys2.appfleet.io
 (cd /home/repo/msys2-main-server/ && docker compose exec mirrorbits mirrorbits refresh)
 ```
 
+## Removing old mirrorbits download stats
+
+```bash
+(cd /home/repo/msys2-main-server/ && docker compose exec mirrorbits mirrorbits-del-stats -f daily:1 monthly:1 yearly:1)
+```
+
 ## Block an IP that is misusing the service
 
 ```bash
