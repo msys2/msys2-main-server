@@ -7,18 +7,21 @@ RUN apt-get update -y && \
 
 RUN git clone https://github.com/etix/mirrorbits.git && \
     cd mirrorbits && \
-    git checkout 4e34d9b961a56bd669934acf1fd7d2313128a3d5
+    git checkout 7164f2c5e6f03e84f34612895ebd8218f741d1da
 
 COPY 0001-Rework-the-mirror-selection-logic.patch mirrorbits
-COPY 168.patch mirrorbits
-COPY 169.patch mirrorbits
 
 RUN cd mirrorbits && \
     git apply 0001-Rework-the-mirror-selection-logic.patch && \
-    git apply 168.patch && \
-    git apply 169.patch && \
     mkdir -p dist/usr/bin && \
     make install PREFIX=/usr DESTDIR=dist
+
+RUN cd mirrorbits && \
+    mkdir -p dist/usr/bin/contrib && \
+    cp contrib/mirrorbits-geoupdate-all dist/usr/bin/ && \
+    cp contrib/mirrorbits-del-stats dist/usr/bin/contrib/mirrorbits-del-stats
+
+COPY mirrorbits-del-stats-wrapper.sh mirrorbits/dist/usr/bin/mirrorbits-del-stats
 
 FROM ubuntu:jammy
 
