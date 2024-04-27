@@ -51,7 +51,7 @@ msys2-autobuild fetch-assets --delete ./staging
 # Process package removals (if there are any)
 (cd msys2-devtools && poetry run python msys2-dbremove-api)
 
-# Refresh mirrorbits after repo changes
+# Refresh mirrorbits after repo changes (will happen anyway every 5 minutes otherwise)
 exit
 ssh root@msys2.appfleet.io
 (cd /home/repo/msys2-main-server/ && docker compose exec mirrorbits mirrorbits refresh)
