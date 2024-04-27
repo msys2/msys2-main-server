@@ -25,7 +25,10 @@ if [ -f "add_mirrors.sh" ]; then
     source add_mirrors.sh
 fi
 
+REDIS_HOST=$(grep "RedisAddress" /etc/mirrorbits.conf | cut -d ':' -f 2 | xargs)
+REDIS_PORT=$(grep "RedisAddress" /etc/mirrorbits.conf | cut -d ':' -f 3 | xargs)
+
 # Save redis DB to disk
-redis-cli -h redis BGSAVE SCHEDULE
+redis-cli -h "$REDIS_HOST" -p "$REDIS_PORT" BGSAVE SCHEDULE
 
 wait $pid
