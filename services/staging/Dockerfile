@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS build
+FROM ubuntu:24.04 AS build
 ARG pacman_version=6.1.0
 
 RUN apt update \
@@ -56,7 +56,7 @@ RUN { \
   && ninja -C build/ \
   && env DESTDIR=/tmp/install meson install -C build/
 
-FROM ubuntu:22.04 as installed
+FROM ubuntu:24.04 as installed
 RUN apt update \
   && env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     gnupg \
