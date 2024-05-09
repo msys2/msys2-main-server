@@ -167,9 +167,7 @@ git clone https://github.com/msys2/msys2-devtools
 (cd msys2-devtools; poetry install)
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
 
-sudo apt install libarchive13 libarchive-tools libcurl4 libgpgme11 libssl1.1 zstd
 cd msys2-main-server/staging
 sudo ./install_to_host.sh
-sudo ldconfig
 sudo pacman --version
 ```
