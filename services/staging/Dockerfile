@@ -1,5 +1,5 @@
 FROM ubuntu:22.04 AS build
-ARG pacman_version=6.0.2
+ARG pacman_version=6.1.0
 
 RUN apt update \
   && env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
@@ -33,8 +33,8 @@ RUN gpg --update-trustdb \
 
 WORKDIR /tmp
 
-RUN curl -sLO https://sources.archlinux.org/other/pacman/pacman-${pacman_version}.tar.xz \
-  && curl -sLO https://sources.archlinux.org/other/pacman/pacman-${pacman_version}.tar.xz.sig \
+RUN curl -sLO https://gitlab.archlinux.org/pacman/pacman/-/releases/v${pacman_version}/downloads/pacman-${pacman_version}.tar.xz \
+  && curl -sLO https://gitlab.archlinux.org/pacman/pacman/-/releases/v${pacman_version}/downloads/pacman-${pacman_version}.tar.xz.sig \
   && gpg --verify --status-fd 1 pacman-${pacman_version}.tar.xz.sig pacman-${pacman_version}.tar.xz | grep -qE '^\[GNUPG:\] TRUST_(FULLY|ULTIMATE).*$' \
   && tar -xf pacman-${pacman_version}.tar.xz \
   && rm pacman-${pacman_version}.tar.xz pacman-${pacman_version}.tar.xz.sig
