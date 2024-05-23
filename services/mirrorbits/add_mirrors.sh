@@ -22,8 +22,8 @@ mirrorbits enable mirror.nju.edu.cn
 mirrorbits add -http=https://mirrors.bfsu.edu.cn/msys2/ -rsync=rsync://mirrors.bfsu.edu.cn/msys2/ mirrors.bfsu.edu.cn
 mirrorbits enable mirrors.bfsu.edu.cn
 
-mirrorbits add -http=https://ftp.acc.umu.se/mirror/msys2.org/ -rsync=rsync://ftp.acc.umu.se/mirror/msys2.org/ ftp.acc.umu.se
-mirrorbits enable ftp.acc.umu.se
+mirrorbits add -http=https://mirror.accum.se/mirror/msys2.org/ -rsync=rsync://mirror.accum.se/mirror/msys2.org/ mirror.accum.se
+mirrorbits enable mirror.accum.se
 
 mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsync://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
 mirrorbits enable mirrors.dotsrc.org
