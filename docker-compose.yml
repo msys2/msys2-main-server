@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   reverse-proxy:
-    image: traefik:2.11
+    image: traefik:v3.0
     depends_on:
       - docker-proxy
     command:
@@ -38,7 +38,6 @@ services:
       - "--certificatesResolvers.le.acme.keyType=EC256"
       - "--certificatesResolvers.le.acme.httpChallenge=true"
       - "--certificatesResolvers.le.acme.httpChallenge.entryPoint=web"
-      - "--experimental.http3=true"
       - "--entrypoints.web-secure.http3"
       # Access logs: Which request+status from which IP using which User-Agent?
       - "--accesslog=true"
