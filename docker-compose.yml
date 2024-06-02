@@ -72,8 +72,6 @@ services:
   stats:
     build: ./services/stats
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.stats-strip.stripprefix.prefixes=/stats"
@@ -99,8 +97,6 @@ services:
   packages:
     image: ghcr.io/msys2/msys2-web:latest
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.packages-compress.compress=true"
@@ -123,8 +119,6 @@ services:
   redir:
     image: nginx:1.26
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.homepage-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
@@ -145,8 +139,6 @@ services:
   mingw-w64-redir:
     image: nginx:1.26
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.mingw-w64-redir.redirectregex.regex=^http(s?)://(?:www[.])?mingw-w64[.](?:org|net)/(.*)$$"
@@ -167,8 +159,6 @@ services:
   repo:
     image: nginx:1.26
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     volumes:
       - /srv/msys2repo/:/usr/share/nginx/html/:ro
       - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -201,8 +191,6 @@ services:
   stagingrepo:
     image: nginx:1.26
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
       - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -228,8 +216,6 @@ services:
   rsync:
     build: ./services/rsync/
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     volumes:
       - /srv/msys2repo/:/rsync-volume/:ro
       - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
@@ -281,7 +267,6 @@ services:
     depends_on:
       - redis
       - geoipupdate
-      - reverse-proxy
     volumes:
       - geoip-data:/usr/share/GeoIP:ro
       - /srv/msys2repo:/repo-volume:ro
@@ -306,8 +291,6 @@ services:
     build: https://github.com/msys2-arm/msys2-autobuild-controller.git#main
     restart: unless-stopped
     logging: *default-logging
-    depends_on:
-      - reverse-proxy
     volumes:
       - ./services/autobuild-controller:/app/instance:ro
     labels:

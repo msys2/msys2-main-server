@@ -53,8 +53,6 @@ services:
 
   packages:
     image: ghcr.io/msys2/msys2-web:latest
-    depends_on:
-      - reverse-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.packages-compress.compress=true"
@@ -68,8 +66,6 @@ services:
 
   repo:
     image: nginx:1.26
-    depends_on:
-      - reverse-proxy
     volumes:
       - ./devrepo/:/usr/share/nginx/html/:ro
       - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -82,8 +78,6 @@ services:
 
   staging:
     build: ./services/staging/
-    depends_on:
-      - reverse-proxy
     volumes:
       - staging-gnupg:/root/.gnupg/
       - staging-repos:/srv/msys2staging/
@@ -93,8 +87,6 @@ services:
 
   stagingrepo:
     image: nginx:1.26
-    depends_on:
-      - reverse-proxy
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
       - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -111,8 +103,6 @@ services:
 
   rsync:
     build: ./services/rsync/
-    depends_on:
-      - reverse-proxy
     volumes:
       - ./devrepo/:/rsync-volume/:ro
       - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
@@ -155,7 +145,6 @@ services:
     depends_on:
       - redis
       - geoipupdate
-      - reverse-proxy
     volumes:
       - geoip-data:/usr/share/GeoIP:ro
       - ./devrepo:/repo-volume:ro
