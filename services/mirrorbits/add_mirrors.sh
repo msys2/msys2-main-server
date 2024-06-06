@@ -38,7 +38,8 @@ mirrorbits add -http=https://mirror.internet.asn.au/pub/msys2/ -rsync=rsync://mi
 mirrorbits enable mirror.internet.asn.au
 
 mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu/msys2/ mirror.umd.edu
-mirrorbits enable mirror.umd.edu
+# currently flaky
+#mirrorbits enable mirror.umd.edu
 
 mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
 mirrorbits enable mirror.clarkson.edu
