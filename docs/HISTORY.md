@@ -122,7 +122,7 @@ sudo docker compose up -d --build -f msys2-main-server/docker-compose.yml --proj
 
 sudo apt install gnupg
 gpg --update-trustdb
-curl -L https://github.com/msys2/msys2-keyring/raw/master/msys2.gpg | gpg --import
+curl -L https://github.com/msys2/msys2-keyring/raw/main/msys2.gpg | gpg --import
 echo $'5\ny\n' | gpg --command-fd 0 --no-tty --edit-key 87771331B3F1FF5263856A6D974C8BE49078F532 trust
 echo $'5\ny\n' | gpg --command-fd 0 --no-tty --edit-key 5F944B027F7FE2091985AA2EFA11531AA0AA7F57 trust
 cat > .gnupg/gpg.conf
