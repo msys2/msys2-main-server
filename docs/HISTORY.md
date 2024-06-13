@@ -160,10 +160,6 @@ allow-ocsp
 nameserver 9.9.9.9
 keyserver hkp://keyserver.ubuntu.com:11371
 ^D
-echo StreamLocalBindUnlink yes | sudo tee -a /etc/ssh/sshd_config
-echo PasswordAuthentication no | sudo tee -a /etc/ssh/sshd_config
-echo PermitEmptyPasswords no | sudo tee -a /etc/ssh/sshd_config
-sudo service ssh reload
 
 sudo apt install pipx
 pipx install poetry
