@@ -67,9 +67,6 @@ apt install iptables-persistent
 netfilter-persistent save
 
 apt install vnstat
-sed -i /etc/vnstat.conf -e 's/^Interface ""$/Interface "enp2s0"/'
-systemctl restart vnstat
-vnstat --iflist | sed -e 's/^Available interfaces: //' -e 's/(.*)//g' -e 's/enp2s0//' | xargs -rn1 vnstat --remove --force --iface
 
 useradd -s /bin/bash repo
 usermod -p '*' repo
