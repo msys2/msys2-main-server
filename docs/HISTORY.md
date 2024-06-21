@@ -36,7 +36,8 @@ echo "AuthorizedKeysFile /etc/ssh/authorized_keys .ssh/authorized_keys
 PasswordAuthentication no
 PermitEmptyPasswords no
 AuthenticationMethods publickey
-PubkeyAuthentication yes" > /etc/ssh/sshd_config.d/msys2.conf
+PubkeyAuthentication yes
+StreamLocalBindUnlink yes" > /etc/ssh/sshd_config.d/msys2.conf
 service ssh reload
 # test that pubkey login works
 
