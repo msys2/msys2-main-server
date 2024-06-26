@@ -66,11 +66,9 @@ ssh root@msys2.appfleet.io
 ## Block an IP that is misusing the service
 
 ```bash
-iptables -I DOCKER-USER 1 -s x.x.x.x -j DROP
+iptables -I DOCKER-USER 1 -s x.x.x.x -j REJECT
+netfilter-persistent save
 ```
-Then add a note to https://github.com/msys2/msys2-main-server/issues/16
-
-TODO: persisting the iptables rules?
 
 ## Update installer
 
