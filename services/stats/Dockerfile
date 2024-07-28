@@ -1,5 +1,7 @@
 FROM ubuntu:22.04
 
+# to test locally, run `vnstatd -n` once in the container
+
 RUN \
     apt update && \
     env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
@@ -9,9 +11,13 @@ RUN \
         libapache2-mod-php8.1 \
         patchutils \
         unzip \
+        vnstat \
     && \
     rm -Rf /var/{cache/apt,lib/apt/lists,log/{alternatives.log,apt,dpkg.log}} && \
 true
+
+RUN ln -sf /dev/stdout /var/log/apache2/access.log && \
+    ln -sf /dev/stderr /var/log/apache2/error.log
 
 WORKDIR /var/www/html/
 RUN rm index.html

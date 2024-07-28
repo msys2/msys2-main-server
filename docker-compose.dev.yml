@@ -51,6 +51,19 @@ services:
       - docker-sock
     restart: unless-stopped
 
+  stats:
+    build: ./services/stats
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.stats-strip.stripprefix.prefixes=/stats"
+      - "traefik.http.middlewares.stats-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
+      - "traefik.http.middlewares.stats-slash-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
+      # http
+      - "traefik.http.routers.stats.rule=Host(`repo.localhost`) && (Path(`/stats`) || PathPrefix(`/stats/`))"
+      - "traefik.http.routers.stats.middlewares=stats-slash-redir,stats-strip"
+      - "traefik.http.routers.stats.entrypoints=web"
+    restart: unless-stopped
+
   packages:
     image: ghcr.io/msys2/msys2-web:latest
     labels:
