@@ -1,4 +1,4 @@
-FROM ubuntu:jammy as build
+FROM ubuntu:24.04 as build
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -23,7 +23,7 @@ RUN cd mirrorbits && \
 
 COPY mirrorbits-del-stats-wrapper.sh mirrorbits/dist/usr/bin/mirrorbits-del-stats
 
-FROM ubuntu:jammy
+FROM ubuntu:24.04
 
 COPY --from=build /mirrorbits/dist /
 
