@@ -1,3 +1,4 @@
+# NOTE: this needs to be the same Ubuntu version as the host!
 FROM ubuntu:22.04 AS build
 ARG pacman_version=6.1.0
 
