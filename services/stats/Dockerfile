@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # to test locally, run `vnstatd -n` once in the container
 
@@ -8,7 +8,7 @@ RUN \
         apache2 \
         composer \
         curl \
-        libapache2-mod-php8.1 \
+        libapache2-mod-php8.3 \
         patchutils \
         unzip \
         vnstat \
