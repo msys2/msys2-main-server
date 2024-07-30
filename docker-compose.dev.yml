@@ -18,6 +18,7 @@ services:
       - docker-proxy
     command:
       - "--api.insecure=true"
+      - "--log.level=INFO"
       - "--providers.docker=true"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
@@ -49,6 +50,7 @@ services:
     networks:
       - default
       - docker-sock
+      - rsync
     restart: unless-stopped
 
   stats:
@@ -119,10 +121,14 @@ services:
     volumes:
       - ./devrepo/:/rsync-volume/:ro
       - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
+    networks:
+      - rsync
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=msys2-repo-dev_rsync"
       - "traefik.tcp.routers.rsync.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.rsync.entrypoints=rsync"
+      - "traefik.tcp.services.rsync.loadbalancer.server.port=873"
       - "traefik.tcp.services.rsync.loadbalancer.proxyprotocol.version=2"
     restart: unless-stopped
 
@@ -178,4 +184,6 @@ volumes:
 networks:
   default:
   docker-sock:
+    internal: true
+  rsync:
     internal: true
