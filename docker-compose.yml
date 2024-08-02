@@ -70,13 +70,21 @@ services:
       - docker-socket-proxy
       - rsync
       - mirrorbits
+      - stagingrepo
+      - repo
+      - packages
+      - stats
     restart: unless-stopped
 
   stats:
     build: ./services/stats
     logging: *default-logging
+    networks:
+      - stats
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.stats.loadbalancer.server.port=80"
+      - "traefik.docker.network=msys2-repo_stats"
       - "traefik.http.middlewares.stats-strip.stripprefix.prefixes=/stats"
       - "traefik.http.middlewares.stats-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/stats($$|[?].*)"
       - "traefik.http.middlewares.stats-slash-redir.redirectregex.replacement=http$${1}://$${2}/stats/$${3}"
@@ -100,8 +108,11 @@ services:
   packages:
     image: ghcr.io/msys2/msys2-web:latest
     logging: *default-logging
+    networks:
+      - packages
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=msys2-repo_packages"
       - "traefik.http.middlewares.packages-compress.compress=true"
       - "traefik.http.middlewares.packages-scheme-redir.redirectscheme.scheme=https"
       - "traefik.http.middlewares.packages-headers.headers.stsseconds=31536000"
@@ -162,11 +173,15 @@ services:
   repo:
     image: nginx:1.26
     logging: *default-logging
+    networks:
+      - repo
     volumes:
       - /srv/msys2repo/:/usr/share/nginx/html/:ro
       - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.repo.loadbalancer.server.port=80"
+      - "traefik.docker.network=msys2-repo_repo"
       - "traefik.http.middlewares.repo-scheme-redir.redirectscheme.scheme=https"
       - "traefik.http.middlewares.repo-headers.headers.stsseconds=31536000"
       # http
@@ -184,6 +199,8 @@ services:
   staging:
     build: ./services/staging/
     logging: *default-logging
+    networks:
+      - staging
     volumes:
       - staging-gnupg:/root/.gnupg/
       - staging-repos:/srv/msys2staging/
@@ -194,11 +211,15 @@ services:
   stagingrepo:
     image: nginx:1.26
     logging: *default-logging
+    networks:
+      - stagingrepo
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
       - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=msys2-repo_stagingrepo"
+      - "traefik.http.services.stagingrepo.loadbalancer.server.port=80"
       - "traefik.http.middlewares.staging-strip.stripprefix.prefixes=/staging"
       - "traefik.http.middlewares.staging-slash-redir.redirectregex.regex=^http(s?)://([^/]*)/staging($$|[?].*)"
       - "traefik.http.middlewares.staging-slash-redir.redirectregex.replacement=http$${1}://$${2}/staging/$${3}"
@@ -252,6 +273,8 @@ services:
     image: ghcr.io/maxmind/geoipupdate:v7.0
     restart: unless-stopped
     logging: *default-logging
+    networks:
+      - geoipupdate
     env_file:
       - ./geoip.env
     environment:
@@ -264,6 +287,7 @@ services:
   cron:
     build: ./services/cron
     restart: unless-stopped
+    network_mode: "none"
     logging: *default-logging
     volumes:
       - /srv/msys2repo:/repo-volume
@@ -344,4 +368,13 @@ networks:
     internal: true
   mirrorbits:
   mirrorbits-redis:
+    internal: true
+  geoipupdate:
+  stagingrepo:
+    internal: true
+  staging:
+  repo:
+    internal: true
+  packages:
+  stats:
     internal: true
