@@ -51,6 +51,7 @@ services:
       - default
       - docker-sock
       - rsync
+      - mirrorbits
     restart: unless-stopped
 
   stats:
@@ -136,6 +137,8 @@ services:
     image: redis:7
     restart: unless-stopped
     hostname: redis
+    networks:
+      - mirrorbits-redis
     entrypoint: redis-server --save 3600 1 --loglevel warning
     volumes:
       - redis-data:/data
@@ -164,6 +167,9 @@ services:
     depends_on:
       - redis
       - geoipupdate
+    networks:
+      - mirrorbits
+      - mirrorbits-redis
     volumes:
       - geoip-data:/usr/share/GeoIP:ro
       - ./devrepo:/repo-volume:ro
@@ -171,6 +177,7 @@ services:
       - ./services/mirrorbits/add_mirrors.sh:/add_mirrors.sh:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=msys2-repo-dev_mirrorbits"
       # http
       - "traefik.http.routers.mirrorbits.rule=Host(`mirror.localhost`)"
       - "traefik.http.routers.mirrorbits.entrypoints=web"
@@ -186,4 +193,7 @@ networks:
   docker-sock:
     internal: true
   rsync:
+    internal: true
+  mirrorbits:
+  mirrorbits-redis:
     internal: true
