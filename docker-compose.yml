@@ -17,7 +17,7 @@ services:
       - docker-sock
     restart: unless-stopped
 
-  reverse-proxy:
+  traefik:
     image: traefik:v3.1
     depends_on:
       - docker-proxy
@@ -63,7 +63,7 @@ services:
       - "874:874"
       # - "8080:8080" # for debug interface on 8080
     volumes:
-      - ./services/reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
+      - ./services/traefik/traefik-tls.yml:/configs/traefik-tls.yml:ro
       - letsencrypt:/letsencrypt/
     networks:
       - default

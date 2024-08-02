@@ -12,7 +12,7 @@ services:
       - docker-sock
     restart: unless-stopped
 
-  reverse-proxy:
+  traefik:
     image: traefik:v3.1
     depends_on:
       - docker-proxy
@@ -46,7 +46,7 @@ services:
       - "8080:8080"
       - "873:873"
     volumes:
-      - ./services/reverse-proxy/traefik-tls.yml:/configs/traefik-tls.yml:ro
+      - ./services/traefik/traefik-tls.yml:/configs/traefik-tls.yml:ro
     networks:
       - default
       - docker-sock
