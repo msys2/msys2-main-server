@@ -1,9 +1,14 @@
 version: '3.4'
 name: 'msys2-repo-dev'
 
+x-logging:
+  &default-logging
+  driver: 'local'
+
 services:
   docker-proxy:
     image: tecnativa/docker-socket-proxy
+    logging: *default-logging
     environment:
       - CONTAINERS=1
     volumes:
@@ -40,7 +45,7 @@ services:
       - "--accesslog.fields.names.DownstreamStatus=keep"
       - "--accesslog.fields.headers.defaultmode=drop"
       - "--accesslog.fields.headers.names.User-Agent=keep"
-
+    logging: *default-logging
     ports:
       - "9090:80"
       - "8080:8080"
@@ -56,6 +61,7 @@ services:
 
   stats:
     build: ./services/stats
+    logging: *default-logging
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.stats-strip.stripprefix.prefixes=/stats"
@@ -69,6 +75,7 @@ services:
 
   packages:
     image: ghcr.io/msys2/msys2-web:latest
+    logging: *default-logging
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.packages-compress.compress=true"
@@ -82,6 +89,7 @@ services:
 
   repo:
     image: nginx:1.26
+    logging: *default-logging
     volumes:
       - ./devrepo/:/usr/share/nginx/html/:ro
       - ./services/repo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -94,6 +102,7 @@ services:
 
   staging:
     build: ./services/staging/
+    logging: *default-logging
     volumes:
       - staging-gnupg:/root/.gnupg/
       - staging-repos:/srv/msys2staging/
@@ -103,6 +112,7 @@ services:
 
   stagingrepo:
     image: nginx:1.26
+    logging: *default-logging
     volumes:
       - staging-repos:/usr/share/nginx/html/:ro
       - ./services/stagingrepo/nginx.conf:/etc/nginx/conf.d/repo.conf:ro
@@ -119,6 +129,7 @@ services:
 
   rsync:
     build: ./services/rsync/
+    logging: *default-logging
     volumes:
       - ./devrepo/:/rsync-volume/:ro
       - ./services/rsync/rsyncd.conf:/etc/rsyncd.conf:ro
@@ -136,6 +147,7 @@ services:
   redis:
     image: redis:7
     restart: unless-stopped
+    logging: *default-logging
     hostname: redis
     networks:
       - mirrorbits-redis
@@ -146,6 +158,7 @@ services:
   geoipupdate:
     image: ghcr.io/maxmind/geoipupdate:v7.0
     restart: unless-stopped
+    logging: *default-logging
     env_file:
       - ./geoip.env
     environment:
@@ -158,12 +171,14 @@ services:
   cron:
     build: ./services/cron
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - ./devrepo:/repo-volume
 
   mirrorbits:
     build: ./services/mirrorbits
     restart: unless-stopped
+    logging: *default-logging
     depends_on:
       - redis
       - geoipupdate
