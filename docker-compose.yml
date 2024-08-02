@@ -74,6 +74,8 @@ services:
       - repo
       - packages
       - stats
+      - redir
+      - mingw-w64-redir
     restart: unless-stopped
 
   stats:
@@ -133,8 +135,12 @@ services:
   redir:
     image: nginx:1.26
     logging: *default-logging
+    networks:
+      - redir
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.redir.loadbalancer.server.port=80"
+      - "traefik.docker.network=msys2-repo_redir"
       - "traefik.http.middlewares.homepage-redir.redirectregex.regex=^http(s?)://(?:www[.])?msys2[.](?:org|com|net)/(.*)$$"
       - "traefik.http.middlewares.homepage-redir.redirectregex.replacement=http$${1}://www.msys2.org/$${2}"
       - "traefik.http.middlewares.homepage-headers.headers.stsseconds=31536000"
@@ -153,8 +159,12 @@ services:
   mingw-w64-redir:
     image: nginx:1.26
     logging: *default-logging
+    networks:
+      - mingw-w64-redir
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.mingw-w64-redir.loadbalancer.server.port=80"
+      - "traefik.docker.network=msys2-repo_mingw-w64-redir"
       - "traefik.http.middlewares.mingw-w64-redir.redirectregex.regex=^http(s?)://(?:www[.])?mingw-w64[.](?:org|net)/(.*)$$"
       - "traefik.http.middlewares.mingw-w64-redir.redirectregex.replacement=http$${1}://www.mingw-w64.org/$${2}"
       - "traefik.http.middlewares.mingw-w64-headers.headers.stsseconds=31536000"
@@ -348,6 +358,8 @@ services:
     image: 42wim/matterbridge:1
     restart: unless-stopped
     logging: *default-logging
+    networks:
+      - imbridge
     env_file:
       - ./imbridge.env
     volumes:
@@ -377,4 +389,9 @@ networks:
     internal: true
   packages:
   stats:
+    internal: true
+  imbridge:
+  redir:
+    internal: true
+  mingw-w64-redir:
     internal: true
