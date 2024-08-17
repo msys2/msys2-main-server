@@ -165,14 +165,13 @@ services:
       - "traefik.tcp.services.rsync.loadbalancer.proxyprotocol.version=2"
     restart: unless-stopped
 
-  redis:
-    image: redis:7
+  valkey:
+    image: valkey/valkey:7
     restart: unless-stopped
     logging: *default-logging
-    hostname: redis
     networks:
-      - mirrorbits-redis
-    entrypoint: redis-server --save 3600 1 --loglevel warning
+      - mirrorbits-valkey
+    entrypoint: valkey-server --save 3600 1 --loglevel warning
     volumes:
       - redis-data:/data
 
@@ -204,11 +203,11 @@ services:
     restart: unless-stopped
     logging: *default-logging
     depends_on:
-      - redis
+      - valkey
       - geoipupdate
     networks:
       - mirrorbits
-      - mirrorbits-redis
+      - mirrorbits-valkey
     volumes:
       - geoip-data:/usr/share/GeoIP:ro
       - ./devrepo:/repo-volume:ro
@@ -234,7 +233,7 @@ networks:
   rsync:
     internal: true
   mirrorbits:
-  mirrorbits-redis:
+  mirrorbits-valkey:
     internal: true
   geoipupdate:
   stagingrepo:
