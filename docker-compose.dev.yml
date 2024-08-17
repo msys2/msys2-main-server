@@ -173,7 +173,7 @@ services:
       - mirrorbits-valkey
     entrypoint: valkey-server --save 3600 1 --loglevel warning
     volumes:
-      - redis-data:/data
+      - valkey-data:/data
 
   geoipupdate:
     image: ghcr.io/maxmind/geoipupdate:v7.0
@@ -224,7 +224,7 @@ volumes:
   staging-gnupg:
   staging-repos:
   geoip-data:
-  redis-data:
+  valkey-data:
 
 networks:
   default:
