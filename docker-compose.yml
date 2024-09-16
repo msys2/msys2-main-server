@@ -269,7 +269,7 @@ services:
     restart: unless-stopped
 
   valkey:
-    image: valkey/valkey:7
+    image: valkey/valkey:8
     restart: unless-stopped
     logging: *default-logging
     networks:
