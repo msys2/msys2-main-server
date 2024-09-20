@@ -68,7 +68,7 @@ It provides the following services:
 * http://localhost:8080 - the traefik dashboard
 * http://repo.localhost:9090/
 * http://repo.localhost:9090/staging/
-* http://mirror.localhost:9090/
+* http://mirror.localhost:9090/?mirrorstats
 * http://packages.localhost
 * rsync://localhost/builds
 
