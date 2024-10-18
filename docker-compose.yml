@@ -194,6 +194,10 @@ services:
       - "traefik.docker.network=msys2-repo_repo"
       - "traefik.http.middlewares.repo-scheme-redir.redirectscheme.scheme=https"
       - "traefik.http.middlewares.repo-headers.headers.stsseconds=31536000"
+      - "traefik.http.middlewares.repo-legacy-mingw32-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/i686($$|/.*)"
+      - "traefik.http.middlewares.repo-legacy-mingw32-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw32$${3}"
+      - "traefik.http.middlewares.repo-legacy-mingw64-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/x86_64($$|/.*)"
+      - "traefik.http.middlewares.repo-legacy-mingw64-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw64$${3}"
       # http
       - "traefik.http.routers.repo.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo.middlewares=repo-scheme-redir"
@@ -202,7 +206,7 @@ services:
       - "traefik.http.routers.repo-secure.rule=Host(`repo.msys2.org`)"
       - "traefik.http.routers.repo-secure.tls=true"
       - "traefik.http.routers.repo-secure.tls.certresolver=le"
-      - "traefik.http.routers.repo-secure.middlewares=repo-headers"
+      - "traefik.http.routers.repo-secure.middlewares=repo-headers,repo-legacy-mingw32-redir,repo-legacy-mingw64-redir"
       - "traefik.http.routers.repo-secure.entrypoints=web-secure"
     restart: unless-stopped
 
@@ -321,6 +325,10 @@ services:
       - "traefik.docker.network=msys2-repo_mirrorbits"
       - "traefik.http.middlewares.mirrorbits-scheme-redir.redirectscheme.scheme=https"
       - "traefik.http.middlewares.mirrorbits-headers.headers.stsseconds=31536000"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw32-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/i686($$|/.*)"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw32-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw32$${3}"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw64-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/x86_64($$|/.*)"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw64-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw64$${3}"
       # http
       - "traefik.http.routers.mirrorbits.rule=Host(`mirror.msys2.org`)"
       - "traefik.http.routers.mirrorbits.entrypoints=web"
@@ -329,7 +337,7 @@ services:
       - "traefik.http.routers.mirrorbits-secure.rule=Host(`mirror.msys2.org`)"
       - "traefik.http.routers.mirrorbits-secure.tls=true"
       - "traefik.http.routers.mirrorbits-secure.tls.certresolver=le"
-      - "traefik.http.routers.mirrorbits-secure.middlewares=mirrorbits-headers"
+      - "traefik.http.routers.mirrorbits-secure.middlewares=mirrorbits-headers,mirrorbits-legacy-mingw32-redir,mirrorbits-legacy-mingw64-redir"
       - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
 
   autobuild-controller:
