@@ -49,6 +49,12 @@ class TestServer(unittest.TestCase):
             self.assertHSTS(r)
             self.assertEqual(r.url, "https://repo.msys2.org/mingw/sources/")
 
+    def test_legacy_repo_redirects(self):
+        for src, target in {"i686": "mingw32", "x86_64": "mingw64"}.items():
+            for sub in ["repo", "mirror"]:
+                with urlopen(f"https://{sub}.msys2.org/mingw/{src}", timeout=self.TIMEOUT) as r:
+                    self.assertEqual(r.url, f"https://repo.msys2.org/mingw/{target}/")
+
     def test_stagingrepo(self):
         with urlopen("https://repo.msys2.org/staging/", timeout=self.TIMEOUT) as r:
             self.assertEqual(r.url, "https://repo.msys2.org/staging/")
