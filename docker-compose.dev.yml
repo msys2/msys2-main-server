@@ -110,9 +110,14 @@ services:
       - "traefik.enable=true"
       - "traefik.http.services.repo.loadbalancer.server.port=80"
       - "traefik.docker.network=msys2-repo-dev_repo"
+      - "traefik.http.middlewares.repo-legacy-mingw32-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/i686($$|/.*)"
+      - "traefik.http.middlewares.repo-legacy-mingw32-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw32$${3}"
+      - "traefik.http.middlewares.repo-legacy-mingw64-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/x86_64($$|/.*)"
+      - "traefik.http.middlewares.repo-legacy-mingw64-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw64$${3}"
       # http
       - "traefik.http.routers.repo.rule=Host(`repo.localhost`)"
       - "traefik.http.routers.repo.entrypoints=web"
+      - "traefik.http.routers.repo.middlewares=repo-legacy-mingw32-redir,repo-legacy-mingw64-redir"
     restart: unless-stopped
 
   staging:
@@ -216,9 +221,14 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=msys2-repo-dev_mirrorbits"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw32-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/i686($$|/.*)"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw32-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw32$${3}"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw64-redir.redirectregex.regex=^http(s?)://([^/]*)/mingw/x86_64($$|/.*)"
+      - "traefik.http.middlewares.mirrorbits-legacy-mingw64-redir.redirectregex.replacement=http$${1}://$${2}/mingw/mingw64$${3}"
       # http
       - "traefik.http.routers.mirrorbits.rule=Host(`mirror.localhost`)"
       - "traefik.http.routers.mirrorbits.entrypoints=web"
+      - "traefik.http.routers.mirrorbits.middlewares=mirrorbits-legacy-mingw32-redir,mirrorbits-legacy-mingw64-redir"
 
 volumes:
   staging-gnupg:
