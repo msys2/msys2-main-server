@@ -283,7 +283,7 @@ services:
       - valkey-data:/data
 
   geoipupdate:
-    image: ghcr.io/maxmind/geoipupdate:v7.0
+    image: ghcr.io/maxmind/geoipupdate:v7.1
     restart: unless-stopped
     logging: *default-logging
     networks:
