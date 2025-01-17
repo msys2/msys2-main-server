@@ -18,7 +18,7 @@ services:
     restart: unless-stopped
 
   traefik:
-    image: traefik:v3.2
+    image: traefik:v3.3
     depends_on:
       - docker-socket-proxy
     command:
