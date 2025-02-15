@@ -20,7 +20,7 @@ init() {
 
 update() {
     git -C msys2-autobuild pull
-    pip3 install -r msys2-autobuild/requirements.txt
+    pip3 install --break-system-packages -r msys2-autobuild/requirements.txt
 
     mkdir -p "${cache}/"
     PYTHONPATH=msys2-autobuild python3 -m msys2_autobuild fetch-assets --noconfirm --fetch-all --delete "${cache}/"
