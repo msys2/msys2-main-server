@@ -50,5 +50,5 @@ mirrorbits enable mirror.archlinux.tw
 mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
 mirrorbits enable quantum-mirror.hu
 
-mirrorbits add -http=https://fastmirror.pp.ua/msys2/ -rsync=rsync://fastmirror.pp.ua/msys2/ fastmirror.pp.ua
-mirrorbits enable fastmirror.pp.ua
+mirrorbits add -http=https://distrohub.kyiv.ua/msys2/ -rsync=rsync://distrohub.kyiv.ua/msys2/ distrohub.kyiv.ua
+mirrorbits enable distrohub.kyiv.ua
