@@ -1,6 +1,6 @@
 # vim: set ft=python :
 
-from permissions import *
+from flask_app.permissions import *
 
 SECRET_KEY = ''
 FERNET_SECRET_KEY = '' # generate with cryptography.fernet.Fernet.generate_key()

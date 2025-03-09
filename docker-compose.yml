@@ -360,6 +360,8 @@ services:
       - "traefik.http.routers.autobuild-controller-secure.tls.certresolver=le"
       - "traefik.http.routers.autobuild-controller-secure.middlewares=autobuild-controller-headers"
       - "traefik.http.routers.autobuild-controller-secure.entrypoints=web-secure"
+    environment:
+      - FORWARDED_ALLOW_IPS=*
 
   imbridge:
     image: 42wim/matterbridge:1
