@@ -341,7 +341,7 @@ services:
       - "traefik.http.routers.mirrorbits-secure.entrypoints=web-secure"
 
   autobuild-controller:
-    build: https://github.com/msys2-arm/msys2-autobuild-controller.git#main
+    image: ghcr.io/msys2/msys2-autobuild-controller:latest
     restart: unless-stopped
     logging: *default-logging
     volumes:
