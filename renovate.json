@@ -6,7 +6,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["nginx"],
-      "allowedVersions": "<1.27 || >1.27"
+      "allowedVersions": "<1.29 || >1.29"
     }
   ]
 }

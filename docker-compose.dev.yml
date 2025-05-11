@@ -98,7 +98,7 @@ services:
     restart: unless-stopped
 
   repo:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - repo
@@ -132,7 +132,7 @@ services:
     restart: unless-stopped
 
   stagingrepo:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - stagingrepo

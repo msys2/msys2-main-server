@@ -132,7 +132,7 @@ services:
     restart: unless-stopped
 
   redir:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - redir
@@ -156,7 +156,7 @@ services:
     restart: unless-stopped
 
   mingw-w64-redir:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - mingw-w64-redir
@@ -180,7 +180,7 @@ services:
     restart: unless-stopped
 
   repo:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - repo
@@ -222,7 +222,7 @@ services:
     restart: unless-stopped
 
   stagingrepo:
-    image: nginx:1.26
+    image: nginx:1.28
     logging: *default-logging
     networks:
       - stagingrepo
