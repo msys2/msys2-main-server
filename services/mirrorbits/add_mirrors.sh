@@ -31,13 +31,13 @@ mirrorbits enable mirrors.dotsrc.org
 mirrorbits add -http=https://ftp.nluug.nl/pub/os/windows/msys2/builds/ -rsync=rsync://ftp.nluug.nl/msys2/builds/ ftp.nluug.nl
 mirrorbits enable ftp.nluug.nl
 
-mirrorbits add -http=https://ftp-chi.osuosl.org/pub/msys2/ -rsync=rsync://ftp-chi.osuosl.org/msys2/ ftp-chi.osuosl.org
+mirrorbits add -http=https://ftp-chi.osuosl.org/pub/msys2/ -rsync=rsync://rsync2.osuosl.org/msys2/ ftp-chi.osuosl.org
 mirrorbits enable ftp-chi.osuosl.org
 
-mirrorbits add -http=https://ftp-nyc.osuosl.org/pub/msys2/ -rsync=rsync://ftp-nyc.osuosl.org/msys2/ ftp-nyc.osuosl.org
+mirrorbits add -http=https://ftp-nyc.osuosl.org/pub/msys2/ -rsync=rsync://rsync2.osuosl.org/msys2/ ftp-nyc.osuosl.org
 mirrorbits enable ftp-nyc.osuosl.org
 
-mirrorbits add -http=https://ftp-osl.osuosl.org/pub/msys2/ -rsync=rsync://ftp-osl.osuosl.org/msys2/ ftp-osl.osuosl.org
+mirrorbits add -http=https://ftp-osl.osuosl.org/pub/msys2/ -rsync=rsync://rsync2.osuosl.org/msys2/ ftp-osl.osuosl.org
 mirrorbits enable ftp-osl.osuosl.org
 
 mirrorbits add -http=https://mirror.internet.asn.au/pub/msys2/ -rsync=rsync://mirror.internet.asn.au/msys2/ mirror.internet.asn.au
