@@ -1,4 +1,4 @@
-From a7eac820f7bbf4c251a9d364e4377df187bd71a0 Mon Sep 17 00:00:00 2001
+From f41762ca1298f66a95bf0d975aa3f126ed6f0614 Mon Sep 17 00:00:00 2001
 From: Christoph Reiter <reiter.christoph@gmail.com>
 Date: Mon, 14 Jun 2021 22:55:25 +0200
 Subject: [PATCH] Rework the mirror selection logic
@@ -7,14 +7,23 @@ It basically comes down to: We never want to skip the closest mirror
 and if there many mirrors near the closest one we want them all
 ("near" being constant here)
 ---
- http/selection.go | 45 +++++++++++++++++++--------------------------
- 1 file changed, 19 insertions(+), 26 deletions(-)
+ http/selection.go | 47 ++++++++++++++++++++---------------------------
+ 1 file changed, 20 insertions(+), 27 deletions(-)
 
 diff --git a/http/selection.go b/http/selection.go
-index e4143b2..2c8ca4b 100644
+index ad312e5..345d27a 100644
 --- a/http/selection.go
 +++ b/http/selection.go
-@@ -151,11 +151,6 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
+@@ -47,7 +47,7 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
+ 	}
+ 
+ 	// Filter the list of mirrors
+-	mlist, excluded, closestMirror, farthestMirror := Filter(mlist, ctx.SecureOption(), fileInfo, clientInfo)
++	mlist, excluded, closestMirror, _ := Filter(mlist, ctx.SecureOption(), fileInfo, clientInfo)
+ 
+ 	if !clientInfo.IsValid() {
+ 		// Shuffle the list
+@@ -65,11 +65,6 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
  		return
  	}
  
@@ -26,7 +35,7 @@ index e4143b2..2c8ca4b 100644
  	/* Weight distribution for random selection [Probabilistic weight] */
  
  	// Compute score for each mirror and return the mirrors eligible for weight distribution.
-@@ -164,38 +159,36 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
+@@ -78,38 +73,36 @@ func (h DefaultEngine) Selection(ctx *Context, cache *mirrors.Cache, fileInfo *f
  	// - mirrors targeting the given country (as primary or secondary)
  	// - mirrors being in the same AS number
  	totalScore := 0
@@ -40,17 +49,17 @@ index e4143b2..2c8ca4b 100644
 -
 -		if m.Distance <= closestMirror*GetConfig().WeightDistributionRange {
 -			score := (float32(baseScore) - m.Distance)
--			if !utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
+-			if !network.IsPrimaryCountry(clientInfo, m.CountryFields) {
 -				score /= 2
 -			}
 -			m.ComputedScore += int(score)
--		} else if utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
+-		} else if network.IsPrimaryCountry(clientInfo, m.CountryFields) {
 -			m.ComputedScore += int(float32(baseScore) - (m.Distance * 5))
 +		// calculate a boost factor based on the config
 +		boost = 1
-+		if utils.IsPrimaryCountry(clientInfo, m.CountryFields) {
++		if network.IsPrimaryCountry(clientInfo, m.CountryFields) {
 +			boost *= 1.5
- 		} else if utils.IsAdditionalCountry(clientInfo, m.CountryFields) {
+ 		} else if network.IsAdditionalCountry(clientInfo, m.CountryFields) {
 -			m.ComputedScore += int(float32(baseScore) - closestMirror)
 +			boost *= 1.25
  		}
@@ -85,5 +94,5 @@ index e4143b2..2c8ca4b 100644
  	}
  
 -- 
-2.30.2
+2.48.1
 

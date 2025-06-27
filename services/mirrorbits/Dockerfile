@@ -7,7 +7,7 @@ RUN apt-get update -y && \
 
 RUN git clone https://github.com/etix/mirrorbits.git && \
     cd mirrorbits && \
-    git checkout 7164f2c5e6f03e84f34612895ebd8218f741d1da
+    git checkout 25d34ace704c990ed9edbf37db8945903e9cfe73
 
 COPY 0001-Rework-the-mirror-selection-logic.patch mirrorbits
 
