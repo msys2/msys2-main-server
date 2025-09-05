@@ -6,7 +6,7 @@ x-logging:
 
 services:
   docker-socket-proxy:
-    image: tecnativa/docker-socket-proxy:v0.4.0
+    image: tecnativa/docker-socket-proxy:v0.4.1
     logging: *default-logging
     environment:
       - CONTAINERS=1
