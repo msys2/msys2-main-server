@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# mirrorbits add -http=https://repo.msys2.org/ -rsync=rsync://repo.msys2.org/builds/ repo.msys2.org
+# mirrorbits add -http=https://repo.msys2.org/ -rsync=rsyncs://repo.msys2.org/builds/ repo.msys2.org
 # It's configured as a fallback and we have enough mirrors now, so let it focus on redirecting
 # mirrorbits enable repo.msys2.org
 
@@ -25,7 +25,7 @@ mirrorbits enable mirrors.bfsu.edu.cn
 mirrorbits add -http=https://mirror.accum.se/mirror/msys2.org/ -rsync=rsync://mirror.accum.se/mirror/msys2.org/ mirror.accum.se
 mirrorbits enable mirror.accum.se
 
-mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsync://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
+mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsyncs://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
 mirrorbits enable mirrors.dotsrc.org
 
 mirrorbits add -http=https://ftp.nluug.nl/pub/os/windows/msys2/builds/ -rsync=rsync://ftp.nluug.nl/msys2/builds/ ftp.nluug.nl

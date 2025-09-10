@@ -10,9 +10,11 @@ RUN git clone https://github.com/etix/mirrorbits.git && \
     git checkout 25d34ace704c990ed9edbf37db8945903e9cfe73
 
 COPY 0001-Rework-the-mirror-selection-logic.patch mirrorbits
+COPY 0002-rsync-support-rsync-ssl-connections-too.patch mirrorbits
 
 RUN cd mirrorbits && \
     git apply 0001-Rework-the-mirror-selection-logic.patch && \
+    git apply 0002-rsync-support-rsync-ssl-connections-too.patch && \
     mkdir -p dist/usr/bin && \
     make install PREFIX=/usr DESTDIR=dist
 
@@ -29,7 +31,7 @@ COPY --from=build /mirrorbits/dist /
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    rsync redis-tools ca-certificates tzdata && \
+    rsync redis-tools ca-certificates tzdata openssl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY init.sh /init.sh
