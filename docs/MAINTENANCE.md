@@ -20,7 +20,8 @@ apt full-upgrade
 
 ```bash
 # Update Python packages
-pipx reinstall-all
+pipx upgrade-all
+uv tool upgrade --all
 ```
 
 ## Update Docker Services
@@ -46,10 +47,10 @@ msys2-autobuild fetch-assets --delete ./staging
 ./msys2-devtools/msys2-dbadd
 
 # Prune repo (optional)
-(cd msys2-devtools && poetry run python msys2-repo-prune /srv/msys2repo/)
+(cd msys2-devtools && uv run python msys2-repo-prune /srv/msys2repo/)
 
 # Process package removals (if there are any)
-(cd msys2-devtools && poetry run python msys2-dbremove-api)
+(cd msys2-devtools && uv run python msys2-dbremove-api)
 
 # Refresh mirrorbits after repo changes (will happen anyway every 5 minutes otherwise)
 exit

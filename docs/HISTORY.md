@@ -160,11 +160,11 @@ keyserver hkp://keyserver.ubuntu.com:11371
 ^D
 
 sudo apt install pipx
-pipx install poetry
+pipx install uv
 echo "export $(cat msys2-main-server/github_token.env)" >> ~/.profile
-pipx install git+https://github.com/msys2/msys2-autobuild
+uv tool install git+https://github.com/msys2/msys2-autobuild
 git clone https://github.com/msys2/msys2-devtools
-(cd msys2-devtools; poetry install)
+(cd msys2-devtools; uv sync --all-extras)
 mkdir -p staging/{mingw,msys}/{sources,i686,x86_64}/
 
 cd msys2-main-server/staging
