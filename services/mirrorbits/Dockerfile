@@ -24,6 +24,7 @@ RUN cd mirrorbits && \
     cp contrib/mirrorbits-del-stats dist/usr/bin/contrib/mirrorbits-del-stats
 
 COPY mirrorbits-del-stats-wrapper.sh mirrorbits/dist/usr/bin/mirrorbits-del-stats
+COPY mirrorbits-edit-helper.sh mirrorbits/dist/usr/bin/mirrorbits-edit-helper
 
 FROM ubuntu:24.04
 
