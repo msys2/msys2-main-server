@@ -44,7 +44,8 @@ mirrorbits add -http=https://mirror.umd.edu/msys2/ -rsync=rsync://mirror.umd.edu
 #mirrorbits enable mirror.umd.edu
 
 mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.clarkson.edu/msys2/ mirror.clarkson.edu
-mirrorbits enable mirror.clarkson.edu
+# broken: https://github.com/msys2/msys2.github.io/issues/185#issuecomment-3649105507
+#mirrorbits enable mirror.clarkson.edu
 
 mirrorbits add -http=https://mirror.archlinux.tw/MSYS2/ -rsync=rsync://mirror.archlinux.tw/msys2/ mirror.archlinux.tw
 mirrorbits enable mirror.archlinux.tw
