@@ -56,14 +56,12 @@ mirrorbits enable quantum-mirror.hu
 mirrorbits add -http=https://distrohub.kyiv.ua/msys2/ -rsync=rsync://distrohub.kyiv.ua/msys2/ distrohub.kyiv.ua
 mirrorbits enable distrohub.kyiv.ua
 
-mirrorbits add -http=https://us.mirrors.cicku.me/msys2/ -rsync=rsync://172.65.184.192/msys2/ us.mirrors.cicku.me
-# No idea where exactly this one is located
-KEY="Latitude" VALUE="41.2969" EDITOR=mirrorbits-edit-helper mirrorbits edit us.mirrors.cicku.me
-KEY="Longitude" VALUE="-95.9674" EDITOR=mirrorbits-edit-helper mirrorbits edit us.mirrors.cicku.me
+mirrorbits add -http=https://us.mirrors.cicku.me/msys2/ -rsync=rsync://us.dyi.ng/msys2/ us.mirrors.cicku.me
+KEY="Latitude" VALUE="39.7391" EDITOR=mirrorbits-edit-helper mirrorbits edit us.mirrors.cicku.me
+KEY="Longitude" VALUE="-104.9866" EDITOR=mirrorbits-edit-helper mirrorbits edit us.mirrors.cicku.me
 mirrorbits enable us.mirrors.cicku.me
 
-mirrorbits add -http=https://ca.mirrors.cicku.me/msys2/ -rsync=rsync://172.65.184.192/msys2/ ca.mirrors.cicku.me
-# No idea where exactly this one is located
-KEY="Latitude" VALUE="43.6469" EDITOR=mirrorbits-edit-helper mirrorbits edit ca.mirrors.cicku.me
-KEY="Longitude" VALUE="-79.3823" EDITOR=mirrorbits-edit-helper mirrorbits edit ca.mirrors.cicku.me
+mirrorbits add -http=https://ca.mirrors.cicku.me/msys2/ -rsync=rsync://us.dyi.ng/msys2/ ca.mirrors.cicku.me
+KEY="Latitude" VALUE="45.4994" EDITOR=mirrorbits-edit-helper mirrorbits edit ca.mirrors.cicku.me
+KEY="Longitude" VALUE="-73.5703" EDITOR=mirrorbits-edit-helper mirrorbits edit ca.mirrors.cicku.me
 mirrorbits enable ca.mirrors.cicku.me
