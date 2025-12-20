@@ -30,6 +30,13 @@ services:
       - "--entrypoints.rsync.address=:873"
       - "--entryPoints.rsync.transport.respondingTimeouts.readTimeout=0"
       - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedSlash=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedBackSlash=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedNullCharacter=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedSemicolon=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedPercent=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedQuestionMark=true"
+      - "--entryPoints.web.http.encodedCharacters.allowEncodedHash=true"
       # Access logs: Which request+status from which IP using which User-Agent?
       - "--accesslog=true"
       - "--accesslog.bufferingsize=100"
