@@ -50,9 +50,6 @@ mirrorbits add -http=https://mirror.clarkson.edu/msys2/ -rsync=rsync://mirror.cl
 mirrorbits add -http=https://mirror.archlinux.tw/MSYS2/ -rsync=rsync://mirror.archlinux.tw/msys2/ mirror.archlinux.tw
 mirrorbits enable mirror.archlinux.tw
 
-mirrorbits add -http=https://quantum-mirror.hu/mirrors/pub/msys2/ -rsync=rsync://quantum-mirror.hu/msys2/ quantum-mirror.hu
-mirrorbits enable quantum-mirror.hu
-
 mirrorbits add -http=https://distrohub.kyiv.ua/msys2/ -rsync=rsync://distrohub.kyiv.ua/msys2/ distrohub.kyiv.ua
 mirrorbits enable distrohub.kyiv.ua
 
