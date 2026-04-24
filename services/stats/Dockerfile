@@ -1,4 +1,4 @@
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 # to test locally, run `vnstatd -n` once in the container
 
