@@ -1,4 +1,4 @@
-FROM debian:trixie
+FROM debian:trixie-20260505
 
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends rsync && \
