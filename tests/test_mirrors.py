@@ -1,26 +1,12 @@
 #!/usr/bin/env python3
 
 import os
-import re
 import unittest
 import ssl
 import time
 from urllib.request import urlopen
 
-
-def get_mirrors():
-    """Returns a list of URLs for all our mirrors"""
-
-    DIR = os.path.dirname(os.path.realpath(__file__))
-    mirrors = set()
-    script = os.path.join(DIR, "..", "services", "mirrorbits", "add_mirrors.sh")
-    with open(script, "r", encoding="utf-8") as h:
-        for line in h.readlines():
-            if line.startswith("#"):
-                continue
-            mirrors.update(
-                re.findall('((?:http|https)://[a-zA-Z0-9./?=_%:-]*)', line))
-    return sorted(mirrors)
+from tests.utils import get_mirrors
 
 
 class TestMirrors(unittest.TestCase):
