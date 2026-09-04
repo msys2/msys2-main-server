@@ -238,7 +238,7 @@ services:
       - valkey-data:/data
 
   geoipupdate:
-    image: ghcr.io/maxmind/geoipupdate:v7.1
+    image: ghcr.io/maxmind/geoipupdate:v8.0
     restart: unless-stopped
     logging: *default-logging
     security_opt:
