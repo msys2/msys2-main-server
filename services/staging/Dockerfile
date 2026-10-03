@@ -1,5 +1,5 @@
 # NOTE: this needs to be the same Ubuntu version as the host!
-FROM ubuntu:24.04 AS build
+FROM ubuntu:26.04 AS build
 ARG pacman_version=6.1.0
 
 RUN apt update \
@@ -57,14 +57,14 @@ RUN { \
   && ninja -C build/ \
   && env DESTDIR=/tmp/install meson install -C build/
 
-FROM ubuntu:24.04 as installed
+FROM ubuntu:26.04 as installed
 RUN apt update \
   && env DEBIAN_FRONTEND=noninteractive apt install -y --no-install-recommends \
     gnupg \
     libarchive13 \
     libarchive-tools \
     libcurl4 \
-    libgpgme11 \
+    libgpgme45 \
     libssl3 \
     zstd \
   && rm -Rf /var/{cache/apt,lib/apt/lists,log/{alternatives.log,apt,dpkg.log}}
