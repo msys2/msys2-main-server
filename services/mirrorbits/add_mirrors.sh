@@ -67,6 +67,7 @@ mirrorbits add -http=https://mirrors.qlu.edu.cn/msys2/ -rsync=rsync://mirrors.ql
 mirrorbits enable mirrors.qlu.edu.cn
 
 mirrorbits add -http=https://msys2-mirror.crueter.xyz/ -rsync=rsync://62.83.11.124/msys2 msys2-mirror.crueter.xyz
-mirrorbits enable msys2-mirror.crueter.xyz
+# broken: https://github.com/msys2/msys2.github.io/issues/445
+#mirrorbits enable msys2-mirror.crueter.xyz
 KEY="Latitude" VALUE="48.20855" EDITOR=mirrorbits-edit-helper mirrorbits edit msys2-mirror.crueter.xyz
 KEY="Longitude" VALUE="16.37214 " EDITOR=mirrorbits-edit-helper mirrorbits edit msys2-mirror.crueter.xyz
