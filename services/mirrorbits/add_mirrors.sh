@@ -27,7 +27,7 @@ mirrorbits enable mirrors.bfsu.edu.cn
 mirrorbits add -http=https://mirror.accum.se/mirror/msys2.org/ -rsync=rsync://mirror.accum.se/mirror/msys2.org/ mirror.accum.se
 mirrorbits enable mirror.accum.se
 
-mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsyncs://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
+mirrorbits add -http=https://mirrors.dotsrc.org/msys2/ -rsync=rsync://mirrors.dotsrc.org/msys2/ mirrors.dotsrc.org
 mirrorbits enable mirrors.dotsrc.org
 
 mirrorbits add -http=https://ftp.nluug.nl/pub/os/windows/msys2/builds/ -rsync=rsync://ftp.nluug.nl/msys2/builds/ ftp.nluug.nl
