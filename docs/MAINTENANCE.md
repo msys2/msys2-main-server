@@ -30,7 +30,7 @@ uv tool upgrade --all
 ssh root@msys2.appfleet.io
 cd /home/repo/msys2-main-server/
 docker compose pull
-docker compose build --parallel --no-cache
+docker compose build --pull --parallel --no-cache
 docker compose up -d
 docker system prune --all --force
 ```
