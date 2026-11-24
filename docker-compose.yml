@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   traefik:
-    image: traefik:v3.7
+    image: traefik:v3.8
     security_opt:
       - no-new-privileges:true
     cap_drop:
